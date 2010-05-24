@@ -1,23 +1,31 @@
 <?php require_once('./http_auth.php'); /*Delete this line to disable password protection*/ ?>
-<?php /*
+<?php $exec_time = round(microtime(true), 3); /*
 Harvie's JuKe!Box
-///////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Version info:
- 0.2	- Few new functions (search playlist, random,...)
- 0.1.1	- Few little fixups, written help.html in Czech language ;D
- 0.1	- All functions works - TODO: bugfix & replace ugly code
-///////////////////////////////////////////////////////////////////////
+ * 0.3.5 - Fixed security bug - directory traversal in filelisting (upgrade recommended)
+ * 0.3.4 - Generating playlist for flashplayer, searching for bugs, cleaning code and preparing for new version release
+ * 0.3.3 - Shorter URLs for flashplayer (due to discussion at #skola ;o), nicer national characters handling
+ * 0.3.2 - Better support for national charsets, few small bugfixes, css improvements, modular search engines
+ * 0.3.1 - Buckfickses in m3u generation, better navigation, magic_quotes_gpc handled, css improvements
+ * 0.3   - Migrated to standalone WPAudioPlayer (better, nicer, with more functions)
+ * 0.2   - Few new functions (search playlist, random,...)
+ * 0.1.1 - Few little fixups, written help.html in Czech language ;o)
+ * 0.1   - All functions works - TODO: bugfix & replace ugly code
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 */
 
 //Config-basic
 $title = 		'Harvie\'s&nbsp;JuKe!Box'; //Title of jukebox
 $music_dir = 		'./music'; //Local path to directory with music
-$music_dir_url = 	'http://192.168.2.163/pub/m3gen/music'; //URL path to same directory
-//$music_dir_url = 	'http://music.harvie.cz/music';
-//$music_dir_url = 	'http://softz.harvie.cz/jukebox/demo/music';
-$cache_passwd = 	'reload'; //You need this passwd to refresh search cache
+$music_dir_url = 	'http://your-server.net/jukebox/music'; //URL path to the same directory
+$cache_passwd = 	'renew123'; //You need this passwd to refresh search cache
 $sort =			3; //Sort? 0 = none, 1 = playlists, 2 = 1+listings; 3 = 2+search-EXPERIMENTAL! (sorting could eat lot of memory)
-$access_limit =		20; //How many files could be accessed without using cache (while searching)
+$access_limit =		40; //How many files could be accessed without using cache (while searching)
+
+//Encoding settins
+$charset =		'UTF-8'; //Charset for page
+$national_characters =	1; //Support searching in filenames with national characters? 0 = no; 1 = yes; (may slowdown search a little)
 
 //Playlist settings
 $playlist_name = 	'playlist.m3u'; //Name of downloaded pl
@@ -26,19 +34,52 @@ $default_random_count =	30; //How many random songs by defaul?
 
 //External files
 $indexlist = 		array('index.html', 'index.txt'); //Search for this file in each directory
-$bonus_dir =		'./jukebox-bonus'; //Misc. files directory
+$bonus_dir =		'./jbx'; //Misc. files directory
+////
 $search_cache = 	$bonus_dir.'/cache.db'; //Database for searching music (php +rw) - .htaccess: Deny from all!!!
-$flash_player =		$bonus_dir.'/musicplayer.swf'; //path to musicplayer
-$css_file =		$bonus_dir.'/jukebox.css'; //CSS
+$css_file =		$bonus_dir.'/themes/default/jukebox.css'; //CSS (Design)
+$favicon_file =		'./favicon.png'; //favicon
 $header_file =		$bonus_dir.'/header.html'; //header file
 $footer_file =		$bonus_dir.'/footer.html'; //footer file
 
+//Search engines extend search experience
+$search_engines = array(
+	'Google.com' 			=> 'http://google.com/search?q=',
+	'Images' 			=> 'http://google.com/images?q=',
+	'Karaoke-Lyrics.net' 		=> 'http://www.karaoke-lyrics.net/index.php?page=find&q=',
+	'Jyxo.cz multimedia' 		=> 'http://jyxo.cz/s?d=mm&q=',
+	'Centrum.cz mp3' 		=> 'http://search.centrum.cz/index.php?sec=mp3&q=',
+	'YOUTube.com' 			=> 'http://youtube.com/results?search_query='
+);
+
+//Flash MusicPlayer (info about settings: http://wpaudioplayer.com/standalone)
+$flash_player_swf =	$bonus_dir.'/player.swf'; //path to musicplayer
+$flash_player_frame =	'playframe-show'; //FlashPlayer Target (playframe-show|playframe-hide) - usefull for compatibility with old music player
+$flash_player_options = '?bg=000099&loader=000000&tracker=AAAAFF&skip=FFFFFF' //.'&leftbg=000077&rightbg=000077&righticon=999999'
+                        .'&autostart=yes&initialvolume=100&soundFile='; //& arguments (urlencoded song url will be added)
+
 //Security
-error_reporting(0);
+error_reporting(0); //This will disable error reporting, wich can pass sensitive data to users
+
+//External configuration file (overrides index.php configuration)
+@include('./_config.php');
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Init
 srand(time());
+@ini_set('magic_quotes_gpc' , 'off');
+if(get_magic_quotes_gpc()) die("Error: magic_quotes_gpc needs to be disabled!\n");
+
+//Enable flash?
+$useflash = is_file($flash_player_swf);
+
+//Little magic with directories ;o)
 $current_dir = ereg_replace('/+', '/', '/'.$_GET['dir'].'/');
+if(eregi('(/|\\\\)\\.\\.(/|\\\\)', $current_dir)) { //check for directory traversal ;)
+	header('Location: ?');
+	die('Error - directory not found!');
+}
 $dir = $music_dir.$current_dir;
 $url = $music_dir_url.$current_dir;
 $parent_dir = dirname($current_dir);
@@ -57,26 +98,54 @@ function serve_download($filename) {
 	header('X-PHP-Application: Harvie\'s JuKe!Box');
 }
 
-function generate_m3u($dir, $prefix='', $recursive=0) {
+$nchars_f = array('Á','Ä','Č','Ç','Ď','É','Ě','Ë','Í','Ň','Ó','Ö','Ř','Š','Ť','Ú','Ů','Ü','Ý','Ž','á','ä','č','ç','ď','é','ě','ë','í','ň','ó','ö','ř','š','ť','ú','ů','ü','ý','ž');
+$nchars_t = array('A','A','C','C','D','E','E','E','I','N','O','O','R','S','T','U','U','U','Y','Z','a','a','c','c','d','e','e','e','i','n','o','o','r','s','t','u','u','u','y','z');
+
+function unational($text) {
+	if(!$GLOBALS['national_characters']) return $text;
+	return(str_replace($GLOBALS['nchars_f'], $GLOBALS['nchars_t'], $text));
+}
+
+function generate_m3u($dir, $prefix='', $recursive=0, $nl="\r\n", $doubleenc=0) {
 	$dir = $dir . '/';
-	$dd = opendir($dir);
-	while(($item = readdir($dd)) != false) {
-        	if($item == '.' || $item == '..') continue;
-                if( is_file($dir.$item) && eregi(('\.('.$GLOBALS['m3u_exts'].')$'), $item) ) {
-			if($GLOBALS['sort'] > 0) {
-				$temp[] = $item;
-			} else {
-				echo($prefix.'/'.str_replace('%2F', '/', (rawurlencode($dir.$item)))."\r\n");
+	if(isset($_GET['newline'])) $nl = $_GET['newline'];
+	if(!isset($_GET['search'])) {
+		$dd = opendir($dir);
+		while(($item = readdir($dd)) != false) {
+        		if($item == '.' || $item == '..') continue;
+	                if( is_file($dir.$item) && eregi(('\.('.$GLOBALS['m3u_exts'].')$'), $item) ) {
+				if($GLOBALS['sort'] > 0) {
+					$temp[] = $item;
+				} else {
+					$item=($prefix.'/'.str_replace('%2F', '/', (rawurlencode($dir.$item))).$nl);
+					if($doubleenc) $item = rawurlencode($item);
+					echo($item);
+				}
+			}
+	                if($recursive && is_dir($dir.$item)) {
+				generate_m3u($dir.$item, $prefix, $recursive, $nl, $doubleenc);
+	                }
+		}
+	} else {
+		if(!($searchfp = fopen($GLOBALS['search_cache'], 'r')))
+			die("Cannot read cache from $outfile<br />Refresh cache or set permissions properly!<br />\n");
+		while(!feof($searchfp)) {
+			$line = trim(fgets($searchfp));
+			if(@eregi(str_replace(' ', '(.*)', unational($_GET['search'])), unational($line))) {
+				$line=(dirname($GLOBALS['music_dir_url']).'/'.str_replace('%2F', '/', (rawurlencode($line))).$nl);
+				if($doubleenc) $line = rawurlencode($line);
+				echo($line);
 			}
 		}
-                if($recursive && is_dir($dir.$item)) {
-			generate_m3u($dir.$item, $prefix);
-                }
 	}
+
 	if($GLOBALS['sort'] > 0) {
 		@sort($temp);
-		foreach($temp as $item)
-			echo($prefix.'/'.str_replace('%2F', '/', (rawurlencode($dir.$item)))."\r\n");
+		foreach($temp as $item) {
+			$temp=($prefix.'/'.str_replace('%2F', '/', (rawurlencode($dir.$item))).$nl);
+			if($doubleenc) $temp = rawurlencode($temp);
+			echo($temp);
+		}
 	}
 }
 
@@ -117,35 +186,108 @@ function generate_search_cache($dir, $outfile) {
 }
 
 function render_file_line($dir, $item, $dir_url, $index, $filesize, $parent = false) {
-	$parclass=($index%2?"even":"odd"); $parcolor=($index%2?"lightblue":"white");
+	$parclass=($index%2?'even':'odd'); $parcolor=($index%2?'lightblue':'white');
 	$temp=str_replace('&', '%26', dirname($dir_url)).'/'.str_replace('%2F', '/', (rawurlencode($dir.$item)));
 	if(is_numeric($filesize)) $filesize = round($filesize/(1024*1024), 2);
-	echo("<tr class=\"$parclass\" bgcolor=\"$parcolor\">".'<td>'.$index.'</td><td>');
-	echo('<a href="?download&song='.rawurlencode($temp).'">P</a>');
+	echo("<tr class=\"$parclass\" bgcolor=\"$parcolor\">".'<td><a href="#up">'.$index.'</a></td><td class="btntd">');
+	echo('<a href="?download&song='.rawurlencode($temp).'" class="icon iplay">P</a>');
 	if($parent) {
 		echo('/<a href="?dir='.
 			substr(str_replace(array('&','%2F'), array('%26','/'), (rawurlencode(dirname($dir.$item)))), strlen($GLOBALS['music_dir'])).
-			'">D</a>');
+			'" class="icon ifolder">D</a>');
 	}
-	if(is_file($GLOBALS['flash_player']) && eregi(('\.('.$GLOBALS['m3u_exts'].')$'), $item)) {
-		/*echo('/<object type="application/x-shockwave-flash" width=17 height=17  data="'.
-		$GLOBALS['flash_player'].'?song_url='.rawurlencode($temp).'"></object>');*/
-		echo('/<a href="'.$GLOBALS['flash_player'].'?autoplay=true&song_url='.rawurlencode($temp).'" target="playframe">F</a>/'.
-		'<a href="about:blank" target="playframe">S</a>');
+	if($GLOBALS['useflash'] && eregi(('\.('.$GLOBALS['m3u_exts'].')$'), $item)) {
+		echo('/<a href="?f&song='.rawurlencode($temp).
+			'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>/'.
+			'<a href="?blank" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifstop">S</a>');
 	}
-	echo('&nbsp;</td><td><a href="'.$temp.'">'.str_replace('_', ' ', $item).'</a></td><td>'.$filesize."&nbsp;MiB&nbsp;</td></tr>\n");			
+	echo('&nbsp;</td><td><a href="'.$temp.'">'.unxss(str_replace('_', ' ', $item)).'</a></td><td>'.$filesize."&nbsp;MiB&nbsp;</td></tr>\n");			
+}
+
+function render_tr_playframe_show() {
+	if($GLOBALS['flash_player_frame'] == 'playframe-show' && $GLOBALS['useflash']) { ?>
+<tr id="playframe-tr">
+<td><a href="?blank" target="playframe-show" title="Stop playback">S</a></td>
+<td colspan="100%">
+<iframe
+src="?blank"
+name="playframe-show"
+width="100%"
+height="24"
+style="border: none;"
+transparentpagebg="yes"
+></iframe></td></tr>
+	<?php }
+}
+
+function render_footer() {
+	$quotes = array(
+		'This is NOT advertisments. This is just good text to think about... Remove it if you want!',
+		'Downloading without sharing and other forms of leeching equals STEALING! ;P',
+		'Do NOT support Microsoft!!! Use Linux! ;D',
+		'Don\'t steal! Steal and share!!! ;P',
+		'Linux is not matter of price, it\'s matter of freedom!',
+		'This software brought to you by <a href="http://blog.Harvie.cz">Harvie</a> free of charge! Of course...',
+		'Don\'t be looser, use GNU/Linux! ;P',
+		'Make love and not war!',
+		'Take your chance! Prove yourself!',
+		'This software is free of charge. If you wan\'t to donate, please send some money to children in Africa/etc...'
+	);
+
+	echo('<span id="quote" style="float: left;"><i><small>'.$quotes[rand(0,sizeof($quotes)-1)]."</small></i></span>\n");
+	echo('<span id="exectime" style="float: right;"><small>Page was generated in '.(round(microtime(true), 3) - $GLOBALS['exec_time']).' 
+seconds</small></span>');
+	@readfile($GLOBALS['footer_file']);
+	echo('</body></html>');
 }
 
 function unxss($string) {
-	return str_replace(
-		array('&', '"', '\'', '<', '>'),
-		array('&amp;', '&quot;', '&#039;', '&lt;', '&gt;'),
-		$string);
+	return htmlspecialchars($string);
+}
+
+function explode_path($dir) {
+	$dir = substr($dir, strlen($GLOBALS['music_dir'])+1);
+	$temp = split('/', ereg_replace('/+', '/', $dir));
+	$out = '';
+	for($j=sizeof($temp)-1;$j>0;$j--) {
+		$dir = '';
+		for($i=0;$i<(sizeof($temp)-$j);$i++) {
+			$dir.=$temp[$i].'/';
+		}
+		$out.='<a href="?dir='.rawurlencode($dir).'">'.unxss($temp[$i-1]).'</a>/';
+	}
+	return('<a href="?">.</a>/'.$out);
+}
+
+function flash_mp3_player() {
+	?>
+<html><head><title><?=$GLOBALS['title']?>: Flash Music Player Plugin</title>
+<style> * { margin: 0; padding: 0; border: 0; } </style></head><body>
+<object width="100%" height="344">
+        <embed src="<?php
+		echo($GLOBALS['flash_player_swf'].$GLOBALS['flash_player_options']);
+		if(isset($_GET['song'])) echo(rawurlencode($_GET['song']));
+		if(isset($_GET['playlist'])) generate_m3u($GLOBALS['dir'], dirname($GLOBALS['music_dir_url']), isset($_GET['recursive']), ',', true);
+	?>"
+                type="application/x-shockwave-flash"
+                allowscriptaccess="never"
+                allowfullscreen="true"
+                transparentpagebg="yes" 
+                quality="low"
+                width="100%" height="24px"                
+        >You need Adobe Flash enabled browser to play records directly in website.</embed>
+</object></body></html>
+<?php die();
 }
 
 //GET
 if(isset($_GET['download'])) serve_download($playlist_name);
-if(isset($_GET['song'])) die($_GET['song']."\r\n");
+if(isset($_GET['f'])) flash_mp3_player();
+if(isset($_GET['song'])) {
+	die($_GET['song']."\r\n");
+}
+
+
 
 if($_POST['cache-refresh'] == $cache_passwd) {
 	generate_search_cache($music_dir, $search_cache);
@@ -153,18 +295,8 @@ if($_POST['cache-refresh'] == $cache_passwd) {
 }
 
 if(isset($_GET['playlist'])) {
-	if(!isset($_GET['search'])) {
-		generate_m3u($dir, dirname($music_dir_url), isset($_GET['recursive']));
-	} else {
-		if(!($searchfp = fopen($search_cache, 'r')))
-			die("Cannot read cache from $outfile<br />Refresh cache or set permissions properly!<br />\n");
-		while(!feof($searchfp)) {
-			$line = trim(fgets($searchfp));
-			if(@eregi(str_replace(' ', '(.*)', $_GET['search']), $line)) 
-				echo(dirname($music_dir_url).'/'.str_replace('%2F', '/', (rawurlencode($line)))."\r\n");
-		}
-	}
-	die("\n");
+	generate_m3u($dir, dirname($music_dir_url), isset($_GET['recursive']));
+	die();
 }
 
 if(isset($_GET['random'])) {
@@ -177,16 +309,34 @@ if(isset($_GET['random'])) {
 		for($j=0; $j<rand(0, $flen-1); $j++) fgets($searchfp);
 		echo(dirname($music_dir_url).'/'.str_replace('%2F', '/', (rawurlencode(trim(fgets($searchfp)))))."\r\n");
 	}
-	die("\n");
+	die();
+}
+
+if(isset($_GET['blank'])) {
+	?>
+	<link rel="stylesheet" type="text/css" href="<?=$css_file?>" />
+	<body class="blank"><div class="blank"><b>Music player</b> <small><i>(click 'F' link next to the song name to start, 'S' to stop...)</i></small></div></body>
+	<?php die();
 }
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<link rel="stylesheet" type="text/css" href="<?=$css_file?>">
+<meta http-equiv="Content-Type" content="text/html; charset=<?=$charset?>" />
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="<?=$css_file?>" />
+		<link rel="shortcut icon" href="<?=$favicon_file?>" />
+		<link href="<?=$favicon_file?>" rel="icon" type="image/gif" />
+	</head>
+	<body>
 
 <div align="right" style="position: absolute; top: 0; right: 0;">
-	<iframe src="about:blank" name="playframe" width="0" height="0" style="border: none;"></iframe>
-	&lt; <a href="javascript: history.go(-1)">BACK</a> | <a href="?">HOME (<?=$music_dir?>)</a> | <a href="?help">ABOUT/HELP</a> | <a href="?logout">LOGOUT</a>
+	<a name="up"></a>
+	<iframe src="about:blank" name="playframe-hide" width="0" height="0" style="border: none;"></iframe><!-- -----------???--------------- -->
+	<span class="icon">&lt;</span> <a href="javascript: history.go(-1)" class="icon iback">BACK</a>
+	| <a href="?"><span class="icon ihome">HOME</span> (<?=$music_dir?>)</a>
+	| <a href="?help" class="icon ihelp">ABOUT/HELP</a>
+	| <a href="?logout" class="icon ilogout">LOGOUT</a>
 </div>
 
 <?php
@@ -196,17 +346,21 @@ if(isset($_GET['help'])) {
 	die();
 }
 
+
 if(!isset($_GET['search'])) {
-	echo('<title>'.$title.': '.$dir.'</title>');
-	echo('<a href="?" style="color: black;"><h1>'.$title.'</h1></a><h2>Index of: '.$dir.'</h2>');
+	echo('<title>'.$title.': '.unxss($dir).'</title>');
+	echo('<a href="?" style="color: black;"><h1 style="float: left;">'.$title.'</h1></a><h2 style="clear: left; display: inline; float: left;">Index of: '.explode_path($dir).'</h2>');
 } else {
 	echo('<title>'.$title.': '.unxss($_GET['search']).'</title>');
-	echo('<a href="?" style="color: black;"><h1>'.$title.'</h1></a><h2>Searching for: '.unxss($_GET['search']).'</h2>');
-}
+	echo('<a href="?" style="color: black;"><h1 style="float: left;">'.$title.'</h1></a><h2 style="clear: left; display: inline; float: left;">Searching for: '.unxss($_GET['search']).'</h2>');
 
 ?>
 
-<div align="right">
+<?php
+}
+
+?>
+<span style="float: right;">
 	<form action="?" method="GET" align="right" style="display: inline;">
 		<input type="hidden" name="download" value="" />
 		<input type="text" name="random" value="<?=$default_random_count?>" />
@@ -219,56 +373,57 @@ if(!isset($_GET['search'])) {
 		/>
 		<input type="submit" value="search" title="Search in this JuKe!Box..." />
 	</form>
-</div><br /><?php
+</span><?php
 
-if(isset($_GET['search'])) {
+if(!isset($_GET['search'])) {
+	echo('<br style="clear: both;" />');
+} else {
 
-?><div align="right">
-	<form action="http://google.com/search" method="GET" align="right" style="display: inline;">
-		<input type="text" name="q" value="<?=unxss($_GET['search'])?>" />
-		<input type="submit" value="google" title="Search on Google..." />
-	</form>
-	<form action="http://www.elyricsworld.com/search.php?phrase=marley" method="GET" align="right" style="display: inline;">
-		<input type="text" name="phrase" value="<?=unxss($_GET['search'])?>" />
-		<input type="submit" value="lyrics" title="Search for lyrics on internet..." />
-	</form>
-	<form action="http://jyxo.cz/s" method="GET" align="right" style="display: inline;">
-		<input type="hidden" name="d" value="mm" />
-		<input type="text" name="q" value="<?=unxss($_GET['search'])?>" />
-		<input type="submit" value="jyxo multimedia" title="Search media on internet..." />
-	</form>
-	<form action="http://youtube.com/results" method="GET" align="right" style="display: inline;">
-		<input type="text" name="search_query" value="<?=unxss($_GET['search'])?>" />
-		<input type="submit" value="youtube" title="Search on YOUTube..." />
-	</form>
-</div><br />
-<div align="right">
+?>
+<span style="float: right;">
 	<form action="?" method="POST" align="right">
 		<input type="password" name="cache-refresh" value="" title="Password for refreshing - good for avoiding DoS Attacks!!!" />
 		<input type="submit" value="refresh cache" title="You should refresh cache each time when you add new music or upgrade to newer version of JuKe!Box !!!" />
+	&nbsp;
 	</form>
-</div><?php
-echo('Search DB size: '.(filesize($search_cache)/1024)." kB<br />\n");
+</span>
+<div align="right" style="clear: right;" title="Aditional search engines...">
+<br />
+<?php
+	$search_prefix = 0;
+	foreach($search_engines as $search_desc => $search_link) {
+		if(!$search_prefix) {
+			echo(unxss($_GET['search'])." @\n");
+			$search_prefix = 1;
+		}
+		echo('<a href="'.$search_link.rawurlencode($_GET['search']).'">'.$search_desc."</a>;\n");
+	}
+?>
+</div><br style="clear: both;" />
+<?php
+echo('<small>Search DB size: '.(filesize($search_cache)/1024)." kB<br /></small>\n");
 
 if(!($searchfp = fopen($search_cache, 'r')))
 	die("Cannot read cache from $outfile<br />Refresh cache or set permissions properly!<br />\n");
 
 $i = 0;
 echo('<table border="1" width="100%">');
-echo('<tr><td>S</td><td><a href="?download&playlist&search='.unxss($_GET['search']).'">P</a></td><td colspan="100%">Search: '.unxss($_GET['search']).'</td></tr>');
+render_tr_playframe_show();
+echo('<tr><td>S</td><td><a href="?download&playlist&search='.unxss($_GET['search']).'">P</a>');
+if($GLOBALS['useflash']) echo('/<a href="?f&playlist&search='.unxss($_GET['search']).'" target="'.$GLOBALS['flash_player_frame'].'">F</a>');
+echo('</td><td colspan="100%">Search: '.unxss($_GET['search']).'</td></tr>');
+
 while(!feof($searchfp)) {
 	$line = trim(fgets($searchfp));
-	$parclass=($i%2?"even":"odd"); $parcolor=($i%2?"lightblue":"white");
-	if(@eregi(str_replace(' ', '(.*)', $_GET['search']), $line)) {
+	$parclass=($i%2?'even':'odd'); $parcolor=($i%2?'lightblue':'white');
+	if(@eregi(str_replace(' ', '(.*)', unational($_GET['search'])), unational($line))) {
 		$i++;
-		echo("<tr class=\"$parclass\" bgcolor=\"$parcolor\">");
 		$filesize = 0; if($i <= $access_limit) $filesize = filesize($line); else $filesize = 'n/a';
 		render_file_line('', $line, $music_dir_url, $i, $filesize, true);
-		echo("</tr>\n");
 	}
 }
-echo("</table>Total: $i results...<br />");
-die();
+echo('<tr><td colspan="100%">Total: '.$i.' results...</td></tr></table>');
+render_footer(); die();
 
 }
 @readfile($header_file);
@@ -276,11 +431,15 @@ foreach($indexlist as $index) @readfile($dir.$index);
 ?>
 <br />
 <table border="1" width="100%">
-<tr><td>&gt;</td>
-<td><b><a href="?download&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($current_dir))?>">P</a>/<a
-href="?download&recursive&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($current_dir))?>">R</a></b></td>
-<td colspan="100%"><?=$dir?></td></tr>
-<tr><td>^</td><td>&nbsp;</td><td colspan="100%">[DIR] <a href="?dir=<?=rawurlencode($parent_dir)?>">.. (<?=$parent_dir?>)</a></td></tr>
+<?php render_tr_playframe_show(); ?>
+
+<tr class="directory"><td>&gt;</td>
+<td><a href="?download&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($current_dir))?>">P</a>/<a
+href="?download&recursive&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($current_dir))?>">R</a><?php
+if($GLOBALS['useflash']) echo('/<a href="?f&playlist&dir='.str_replace('%2F', '/', rawurlencode($current_dir)).'"  target="'.$GLOBALS['flash_player_frame'].'">F</a>'); ?>
+</td>
+<td colspan="100%"><?=unxss($dir)?></td></tr>
+<tr><td>^</td><td>&nbsp;</td><td colspan="100%" class="directory"><span class="icon ifolder">[DIR]</span> <a href="?dir=<?=rawurlencode($parent_dir)?>">.. (<?=$parent_dir?>)</a></td></tr>
 <?php
 
 $i = 0;
@@ -289,7 +448,7 @@ for($s=2;$s;$s--) { while(($item = readdir($dd)) != false) {
 	if($item == '.' || $item == '..') continue;
 	if(($s==2 && is_file($dir.$item)) || ($s!=2 && is_dir($dir.$item))) continue;
 	$i++;
-	$parclass=($i%2?"even":"odd"); $parcolor=($i%2?"lightblue":"white");
+	$parclass=($i%2?'even':'odd'); $parcolor=($i%2?'lightblue':'white');
 		if(is_file($dir.$item)) {
 			if($sort > 1) {
 				$i--;
@@ -300,10 +459,11 @@ for($s=2;$s;$s--) { while(($item = readdir($dd)) != false) {
 		}
 		if(is_dir($dir.$item)) {
 			$temp=str_replace('%2F', '/', rawurlencode($current_dir)).rawurlencode($item);
-			echo("<tr class=\"$parclass\" bgcolor=\"$parcolor\">".
-			'<td>'.$i.'</td><td><a href="?download&playlist&dir='.$temp.'">P</a>/'.
-			'<a href="?download&recursive&playlist&dir='.$temp.'">R</a></td>'.
-			'<td colspan="100%">[DIR] <a href="?dir='.$temp.'">'.str_replace('_', ' ', $item)."</a></td></tr>\n");
+			echo("<tr class=\"$parclass directory\" bgcolor=\"$parcolor\">".
+			'<td><a href="#up">'.$i.'</a></td><td class="btntd"><a href="?download&playlist&dir='.$temp.'" class="icon iplay">P</a>/'.
+			'<a href="?download&recursive&playlist&dir='.$temp.'">R</a>');
+			if($GLOBALS['useflash']) echo('/<a href="?f&playlist&dir='.$temp.'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>');
+			echo('</td><td colspan="100%"><span class="icon ifolder">[DIR]</span> <a href="?dir='.$temp.'">'.unxss(str_replace('_', ' ', $item))."</a></td></tr>\n");
 		}
 } rewinddir($dd); }
 if($sort > 1) {
@@ -317,18 +477,4 @@ if($sort > 1) {
 ?></table>
 
 <?php
-$quotes = array(
-	'This is NOT advertisments. This is just good text to think about... Remove it if you want!',
-	'Downloading without sharing and other forms of leeching equals STEALING! ;P',
-	'Do NOT support Microsoft!!! Use Linux! ;D',
-	'Don\'t steal! Steal and share!!! ;P',
-	'Linux is not matter of price, it\'s matter of freedom!',
-	'This software brought to you by <a href="http://blog.Harvie.cz">Harvie</a> free of charge! Of course...',
-	'Don\'t be looser, use GNU/Linux! ;P',
-	'Make love and not war!',
-	'Take your chance! Prove yourself!',
-	'This software is free of charge. If you wan\'t to donate, please send some money to children in Africa/etc...'
-);
-
-echo('<i>'.$quotes[rand(0,sizeof($quotes)-1)]."</i>\n");
-@readfile($footer_file);
+render_footer();

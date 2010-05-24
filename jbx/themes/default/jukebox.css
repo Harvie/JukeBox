@@ -1,0 +1,105 @@
+/*
+ * Example CSS for Harvie's JuKe!Box
+ */
+
+body {
+	color: lightblue;
+	font-family: monospace;
+
+	margin: 5px;
+	background-color: black;
+	background-image: url(corner.gif);
+	background-repeat: no-repeat;
+}
+
+a {
+	color: white;
+	text-decoration: none;
+}
+
+h1 {
+	color: white;
+	margin: 15px 0 0 20px;
+}
+
+input {
+	border: 1px solid lightblue;
+}
+
+table * {
+	background-color: darkblue;
+	color: white;
+}
+
+table {
+	border: 0px solid blue;
+	background-color: black;
+}
+
+td {
+	border: 0px solid blue;
+	margin: 0px;
+}
+
+.odd * {
+	background-color: darkblue;
+}
+
+.even * {
+	background-color: #000044;
+}
+
+.blank {
+	margin: 0;
+	padding: 0;
+	background-image: none;
+	color: white;
+	background-color: #000099;
+}
+
+.directory {
+	font-weight: bolder;
+}
+
+
+/* Hovers */
+
+a:hover, a:hover * {
+	text-decoration: underline;
+}
+
+/*tr:hover, tr:hover * { */
+.odd:hover, .odd:hover *,
+.even:hover, .even:hover * {
+	background-color: black;
+}
+
+tr:hover * a {
+	text-decoration: underline;
+}
+
+
+/* Color Classes */
+
+*.red {		color: red; }
+*.yellow {	color: yellow;}
+*.blue {	color: blue;}
+*.green {	color: green;}
+*.white {	color: white;}
+
+/* Icon Classes */
+
+*.icon { text-decoration: none; width: 16px; height: 16px; display: inline; font-size: 0; padding: 12px 16px 4px 0; margin:0; }
+*.icon, *.icon * a:hover { text-decoration: none; }
+
+*.iplay		{ background-image: url(icons/playlist.png); }
+*.ifplay	{ background-image: url(icons/play.png); }
+*.ifstop	{ background-image: url(icons/stop.png); }
+*.ifolder	{ background-image: url(icons/folder.png); }
+*.ilogout	{ background-image: url(icons/logout.png); }
+*.isearch	{ background-image: url(icons/search.png); }
+*.ihome		{ background-image: url(icons/home.png); }
+*.iback		{ background-image: url(icons/back.png); }
+*.ihelp		{ background-image: url(icons/help.png); }
+
+*/
