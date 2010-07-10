@@ -65,9 +65,7 @@ td {
 
 /* Hovers */
 
-a:hover, a:hover * {
-	text-decoration: underline;
-}
+a:hover, a:hover * { text-decoration: underline; }
 
 /*tr:hover, tr:hover * { */
 .odd:hover, .odd:hover *,
@@ -75,20 +73,14 @@ a:hover, a:hover * {
 	background-color: black;
 }
 
-tr:hover * a {
-	text-decoration: underline;
-}
+tr:hover * a {	text-decoration: underline;}
 
-:invalid { 
-        background-color: pink;
-}
+:invalid { 	background-color: pink; }
+:focus { 	color:darkblue; }
 
-.hide {
-	margin:0; padding:0; width:0; height:0; border:none; display:none;
-}
+/* Helpful Classes */
 
-/* Color Classes */
-
+*.hide {	margin:0; padding:0; width:0; height:0; border:none; display:none; }
 *.red {		color: red; }
 *.yellow {	color: yellow;}
 *.blue {	color: blue;}
