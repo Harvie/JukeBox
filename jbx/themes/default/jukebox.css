@@ -2,6 +2,8 @@
  * Example CSS for Harvie's JuKe!Box
  */
 
+* {	border-radius:6px; -moz-border-radius:5px; } 
+
 body {
 	color: lightblue;
 	font-family: monospace;
@@ -68,7 +70,7 @@ td {
 a:hover, a:hover * { text-decoration: underline; }
 
 /*tr:hover, tr:hover * { */
-.odd:hover, .odd:hover *,
+tr, .odd:hover, .odd:hover *,
 .even:hover, .even:hover * {
 	background-color: black;
 }
