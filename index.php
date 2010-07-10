@@ -440,7 +440,8 @@ if($GLOBALS['useflash']) echo('/<a href="?f&playlist&dir='.str_replace('%2F', '/
 class="icon ifplay">F</a>'); ?>
 </td>
 <td colspan="100%"><?=unxss($dir)?></td></tr>
-<tr><td>^</td><td>&nbsp;</td><td colspan="100%" class="directory"><span class="icon ifolder">[DIR]</span> <a href="?dir=<?=rawurlencode($parent_dir)?>">.. (<?=$parent_dir?>)</a></td></tr>
+<tr><td>^</td><td>&nbsp;</td><td colspan="100%" class="directory"><span class="icon ifolder">[DIR] </span><a href="?dir=<?=rawurlencode($parent_dir)?>">.. 
+(<?=$parent_dir?>)</a></td></tr>
 <?php
 
 $i = 0;
@@ -464,7 +465,8 @@ for($s=2;$s;$s--) { while(($item = readdir($dd)) != false) {
 			'<td><a href="#up">'.$i.'</a></td><td class="btntd"><a href="?download&playlist&dir='.$temp.'" class="icon iplay">P</a>/'.
 			'<a href="?download&recursive&playlist&dir='.$temp.'" class="icon irplay">R</a>');
 			if($GLOBALS['useflash']) echo('/<a href="?f&playlist&dir='.$temp.'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>');
-			echo('</td><td colspan="100%"><span class="icon ifolder">[DIR]</span> <a href="?dir='.$temp.'">'.unxss(str_replace('_', ' ', $item))."</a></td></tr>\n");
+			echo('</td><td colspan="100%"><span class="icon ifolder">[DIR] </span><a href="?dir='.$temp.'">'.unxss(str_replace('_', ' ', 
+$item))."</a></td></tr>\n");
 		}
 } rewinddir($dd); }
 if($sort > 1) {
