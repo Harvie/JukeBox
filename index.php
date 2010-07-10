@@ -204,6 +204,17 @@ function render_file_line($dir, $item, $dir_url, $index, $filesize, $parent = fa
 	echo('&nbsp;</td><td><a href="'.$temp.'">'.unxss(str_replace('_', ' ', $item)).'</a></td><td>'.$filesize."&nbsp;MiB&nbsp;</td></tr>\n");			
 }
 
+function render_dir_line($item, $i) {
+	$parclass=($i%2?'even':'odd'); $parcolor=($index%2?'lightblue':'white');
+	$temp=str_replace('%2F', '/', rawurlencode($current_dir)).rawurlencode($item);
+	echo("<tr class=\"$parclass directory\" bgcolor=\"$parcolor\">".
+	'<td><a href="#up">'.$i.'</a></td><td class="btntd"><a href="?download&playlist&dir='.$temp.'" class="icon iplay">P</a>/'.
+	'<a href="?download&recursive&playlist&dir='.$temp.'" class="icon irplay">R</a>');
+	if($GLOBALS['useflash']) echo('/<a href="?f&playlist&dir='.$temp.'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>');
+	echo('</td><td colspan="100%"><span class="icon ifolder">[DIR] </span><a href="?dir='.$temp.'">'.unxss(str_replace('_', ' ', $item)).
+	"</a></td></tr>\n");
+}
+
 function render_tr_playframe_show() {
 	if($GLOBALS['flash_player_frame'] == 'playframe-show' && $GLOBALS['useflash']) { ?>
 <tr id="playframe-tr">
@@ -450,28 +461,34 @@ for($s=2;$s;$s--) { while(($item = readdir($dd)) != false) {
 	if($item == '.' || $item == '..') continue;
 	if(($s==2 && is_file($dir.$item)) || ($s!=2 && is_dir($dir.$item))) continue;
 	$i++;
-	$parclass=($i%2?'even':'odd'); $parcolor=($i%2?'lightblue':'white');
+	//$parclass=($i%2?'even':'odd'); $parcolor=($i%2?'lightblue':'white');
+	if($sort > 1) {
 		if(is_file($dir.$item)) {
-			if($sort > 1) {
-				$i--;
-				$items[] = $item;
-			} else {
-				render_file_line($dir, $item, $music_dir_url, $i, filesize($dir.$item));
-			}
+			$i--;
+			$itemsf[] = $item;
 		}
 		if(is_dir($dir.$item)) {
-			$temp=str_replace('%2F', '/', rawurlencode($current_dir)).rawurlencode($item);
-			echo("<tr class=\"$parclass directory\" bgcolor=\"$parcolor\">".
-			'<td><a href="#up">'.$i.'</a></td><td class="btntd"><a href="?download&playlist&dir='.$temp.'" class="icon iplay">P</a>/'.
-			'<a href="?download&recursive&playlist&dir='.$temp.'" class="icon irplay">R</a>');
-			if($GLOBALS['useflash']) echo('/<a href="?f&playlist&dir='.$temp.'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>');
-			echo('</td><td colspan="100%"><span class="icon ifolder">[DIR] </span><a href="?dir='.$temp.'">'.unxss(str_replace('_', ' ', 
-$item))."</a></td></tr>\n");
+			$i--;
+			$itemsd[] = $item;
 		}
+	} else {
+		if(is_file($dir.$item)) {
+			render_file_line($dir, $item, $music_dir_url, $i, filesize($dir.$item));
+		}
+		if(is_dir($dir.$item)) {
+			render_dir_line($item, $i);
+		}
+	}
 } rewinddir($dd); }
+
 if($sort > 1) {
-	@sort($items);
-	foreach($items as $item) {
+	@sort($itemsf);
+	@sort($itemsd);
+	foreach($itemsd as $item) {
+		$i++;
+		render_dir_line($item, $i);
+	}
+	foreach($itemsf as $item) {
 		$i++;
 		render_file_line($dir, $item, $music_dir_url, $i, filesize($dir.$item));
 	}
