@@ -330,9 +330,9 @@ if(isset($_GET['blank'])) {
 	</head>
 	<body>
 
-<div align="right" style="position: absolute; top: 0; right: 0;">
+<div align="right" style="position: absolute; top: 5px; right: 0px;">
 	<a name="up"></a>
-	<iframe src="about:blank" name="playframe-hide" width="0" height="0" style="border: none;"></iframe><!-- -----------???--------------- -->
+	<iframe src="about:blank" name="playframe-hide" width="0" height="0" style="border: none;" class="hide"></iframe><!-- -----------???--------------- -->
 	<span class="icon">&lt;</span> <a href="javascript: history.go(-1)" class="icon iback">BACK</a>
 	| <a href="?"><span class="icon ihome">HOME</span> (<?=$music_dir?>)</a>
 	| <a href="?help" class="icon ihelp">ABOUT/HELP</a>
@@ -434,9 +434,10 @@ foreach($indexlist as $index) @readfile($dir.$index);
 <?php render_tr_playframe_show(); ?>
 
 <tr class="directory"><td>&gt;</td>
-<td><a href="?download&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($current_dir))?>">P</a>/<a
-href="?download&recursive&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($current_dir))?>">R</a><?php
-if($GLOBALS['useflash']) echo('/<a href="?f&playlist&dir='.str_replace('%2F', '/', rawurlencode($current_dir)).'"  target="'.$GLOBALS['flash_player_frame'].'">F</a>'); ?>
+<td><a href="?download&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($current_dir))?>" class="icon iplay">P</a>/<a
+href="?download&recursive&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($current_dir))?>" class="icon irplay">R</a><?php
+if($GLOBALS['useflash']) echo('/<a href="?f&playlist&dir='.str_replace('%2F', '/', rawurlencode($current_dir)).'"  target="'.$GLOBALS['flash_player_frame'].'" 
+class="icon ifplay">F</a>'); ?>
 </td>
 <td colspan="100%"><?=unxss($dir)?></td></tr>
 <tr><td>^</td><td>&nbsp;</td><td colspan="100%" class="directory"><span class="icon ifolder">[DIR]</span> <a href="?dir=<?=rawurlencode($parent_dir)?>">.. (<?=$parent_dir?>)</a></td></tr>
@@ -461,7 +462,7 @@ for($s=2;$s;$s--) { while(($item = readdir($dd)) != false) {
 			$temp=str_replace('%2F', '/', rawurlencode($current_dir)).rawurlencode($item);
 			echo("<tr class=\"$parclass directory\" bgcolor=\"$parcolor\">".
 			'<td><a href="#up">'.$i.'</a></td><td class="btntd"><a href="?download&playlist&dir='.$temp.'" class="icon iplay">P</a>/'.
-			'<a href="?download&recursive&playlist&dir='.$temp.'">R</a>');
+			'<a href="?download&recursive&playlist&dir='.$temp.'" class="icon irplay">R</a>');
 			if($GLOBALS['useflash']) echo('/<a href="?f&playlist&dir='.$temp.'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>');
 			echo('</td><td colspan="100%"><span class="icon ifolder">[DIR]</span> <a href="?dir='.$temp.'">'.unxss(str_replace('_', ' ', $item))."</a></td></tr>\n");
 		}
