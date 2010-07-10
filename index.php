@@ -3,6 +3,7 @@
 Harvie's JuKe!Box
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Version info:
+ * 0.3.6 - Now sorting also directories and have icon link support in css
  * 0.3.5 - Fixed security bug - directory traversal in filelisting (upgrade recommended)
  * 0.3.4 - Generating playlist for flashplayer, searching for bugs, cleaning code and preparing for new version release
  * 0.3.3 - Shorter URLs for flashplayer (due to discussion at #skola ;o), nicer national characters handling
