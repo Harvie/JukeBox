@@ -205,8 +205,8 @@ function render_file_line($dir, $item, $dir_url, $index, $filesize, $parent = fa
 	echo('&nbsp;</td><td><a href="'.$temp.'">'.unxss(str_replace('_', ' ', $item)).'</a></td><td>'.$filesize."&nbsp;MiB&nbsp;</td></tr>\n");			
 }
 
-function render_dir_line($item, $i) {
-	$parclass=($i%2?'even':'odd'); $parcolor=($index%2?'lightblue':'white');
+function render_dir_line($current_dir, $item, $i) {
+	$parclass=($i%2?'even':'odd'); $parcolor=($i%2?'lightblue':'white');
 	$temp=str_replace('%2F', '/', rawurlencode($current_dir)).rawurlencode($item);
 	echo("<tr class=\"$parclass directory\" bgcolor=\"$parcolor\">".
 	'<td><a href="#up">'.$i.'</a></td><td class="btntd"><a href="?download&playlist&dir='.$temp.'" class="icon iplay">P</a>/'.
@@ -477,7 +477,7 @@ for($s=2;$s;$s--) { while(($item = readdir($dd)) != false) {
 			render_file_line($dir, $item, $music_dir_url, $i, filesize($dir.$item));
 		}
 		if(is_dir($dir.$item)) {
-			render_dir_line($item, $i);
+			render_dir_line($current_dir, $item, $i);
 		}
 	}
 } rewinddir($dd); }
@@ -487,7 +487,7 @@ if($sort > 1) {
 	@sort($itemsd);
 	foreach($itemsd as $item) {
 		$i++;
-		render_dir_line($item, $i);
+		render_dir_line($current_dir, $item, $i);
 	}
 	foreach($itemsf as $item) {
 		$i++;
