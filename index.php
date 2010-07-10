@@ -330,7 +330,7 @@ if(isset($_GET['blank'])) {
 	</head>
 	<body>
 
-<div align="right" style="position: absolute; top: 5px; right: 0px;">
+<div align="right" style="position: absolute; top: 5px; right: 5px;">
 	<a name="up"></a>
 	<iframe src="about:blank" name="playframe-hide" width="0" height="0" style="border: none;" class="hide"></iframe><!-- -----------???--------------- -->
 	<span class="icon">&lt;</span> <a href="javascript: history.go(-1)" class="icon iback">BACK</a>
