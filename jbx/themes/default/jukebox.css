@@ -76,7 +76,7 @@ a:hover, a:hover * { text-decoration: underline; }
 tr:hover * a {	text-decoration: underline;}
 
 :invalid { 	background-color: pink; }
-:focus { 	color:darkblue; }
+:focus { 	border-color:yellow; }
 
 /* Helpful Classes */
 

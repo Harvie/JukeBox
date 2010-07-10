@@ -375,7 +375,9 @@ if(!isset($_GET['search'])) {
 <span style="float: right;">
 	<form action="?" method="GET" align="right" style="display: inline;">
 		<input type="hidden" name="download" value="" />
-		<input type="number" name="random" value="<?=$default_random_count?>" />
+		<input type="number" min="1" name="random" value="<?=$default_random_count?>" style="width:4em;" title="how many randomly selected tracks should be in 
+playlist?" 
+/>
 		<input type="submit" value="random" title="Generate random music playlist..." />
 	</form>
 	<form action="?" method="GET" align="right" style="display: inline;">
@@ -394,7 +396,7 @@ if(!isset($_GET['search'])) {
 ?>
 <span style="float: right;">
 	<form action="?" method="POST" align="right">
-		<input type="password" name="cache-refresh" value="" title="Password for refreshing - good for avoiding DoS Attacks!!!" />
+		<input type="password" name="cache-refresh" value="" style="width:5em;" title="Password for refreshing - good for avoiding DoS Attacks!!!" />
 		<input type="submit" value="refresh cache" title="You should refresh cache each time when you add new music or upgrade to newer version of JuKe!Box !!!" />
 	&nbsp;
 	</form>
