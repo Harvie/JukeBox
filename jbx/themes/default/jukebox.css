@@ -83,6 +83,7 @@ tr:hover * a {	text-decoration: underline;}
 /* Helpful Classes */
 
 *.hide {	margin:0; padding:0; width:0; height:0; border:none; display:none; }
+*.maximize-width { width:100%; }
 *.red {		color: red; }
 *.yellow {	color: yellow;}
 *.blue {	color: blue;}
