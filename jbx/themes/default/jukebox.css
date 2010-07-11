@@ -2,7 +2,7 @@
  * Example CSS for Harvie's JuKe!Box
  */
 
-* {	border-radius:6px; -moz-border-radius:5px; } 
+*:not(html):not(body) {	border-radius:6px; -moz-border-radius:5px; } 
 
 body {
 	color: lightblue;
@@ -106,7 +106,7 @@ tr:hover * a {	text-decoration: underline;}
 *.ifstop	{ background-image: url(icons/stop.png); }
 *.ifolder	{ background-image: url(icons/folder.png); margin-right: 3px; }
 *.ilogout	{ background-image: url(icons/logout.png); }
-*.isearch	{ background-image: url(icons/search.png); }
+*.isearch	{ background-image: url(icons/search.png); position:relative; top:4px; }
 *.ihome		{ background-image: url(icons/home.png); }
 *.iback		{ background-image: url(icons/back.png); }
 *.ihelp		{ background-image: url(icons/help.png); }

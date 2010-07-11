@@ -381,7 +381,7 @@ playlist?"
 		<input type="submit" value="random" title="Generate random music playlist..." />
 	</form>
 	<form action="?" method="GET" align="right" style="display: inline;">
-		<input type="search" name="search" autofocus placeholder="search regexp..."
+		<span class="icon isearch"></span><input type="search" name="search" autofocus placeholder="search regexp..."
 			title="Search in music/google/lyrics/mp3/youtube; Hint: You can use regular expressions in search query..."
 			value="<?=unxss($_GET['search'])?>"
 		/>
