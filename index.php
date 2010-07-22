@@ -202,7 +202,8 @@ function render_file_line($dir, $item, $dir_url, $index, $filesize, $parent = fa
 			'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>/'.
 			'<a href="?blank" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifstop">S</a>');
 	}
-	echo('&nbsp;</td><td class="maximize-width"><a href="'.$temp.'">'.unxss(str_replace('_', ' ', $item)).'</a></td><td>'.$filesize."&nbsp;MiB&nbsp;</td></tr>\n");			
+	echo('&nbsp;</td><td class="maximize-width"><a href="'.$temp.'">'.unxss(str_replace('-',' - ',str_replace('_', ' ', 
+$item))).'</a></td><td>'.$filesize."&nbsp;MiB&nbsp;</td></tr>\n");			
 }
 
 function render_dir_line($current_dir, $item, $i) {
