@@ -424,8 +424,8 @@ if(!($searchfp = fopen($search_cache, 'r')))
 $i = 0;
 echo('<table border="1" width="100%">');
 render_tr_playframe_show();
-echo('<tr><td>S</td><td><a href="?download&playlist&search='.unxss($_GET['search']).'">P</a>');
-if($GLOBALS['useflash']) echo('/<a href="?f&playlist&search='.unxss($_GET['search']).'" target="'.$GLOBALS['flash_player_frame'].'">F</a>');
+echo('<tr class="directory"><td>S</td><td><a href="?download&playlist&search='.unxss($_GET['search']).'" class="icon iplay">P</a>');
+if($GLOBALS['useflash']) echo('/<a href="?f&playlist&search='.unxss($_GET['search']).'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>');
 echo('</td><td colspan="100%">Search: '.unxss($_GET['search']).'</td></tr>');
 
 while(!feof($searchfp)) {
