@@ -13,9 +13,9 @@ Basicaly it's easy to use, easy to install, fully configurable and it looks like
 Zjednodušeně je aplikace lehce použitelná, lehce se instaluje, vše se dá nastavit a vypadá takto:
 
 
-ScreenShot
+ScreenShots
 ----------
-![screenshot](http://img218.imageshack.us/img218/2669/jukeboxscreen3.png)
+![screenshot](http://img835.imageshack.us/img835/378/harviejukebox036.png)
 
 
 TODO
