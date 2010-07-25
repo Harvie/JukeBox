@@ -15,17 +15,18 @@ $music_dir =            './music'; //Local path to directory with music
 $music_dir_url =        'http://your-server.net/jukebox/music'; //URL path to the same directory CHANGE IT!
 $cache_passwd =         'renew123'; //You need this passwd to refresh search cache CHANGE IT!
 //Login
-$realm =		'music';//Banner
-$user =			'music';//User
-$passwd =		'Default-Secr3t_PaSsw0rd'; //Password CHANGE IT!
-$require_login = 	true;
+$realm =                'music'; //HTTP Auth Banner
+$users = array(         //List of 'user' => 'password' touples CHANGE IT!
+                        'music' => 'Default-Secr3t_PaSsw0rd'
+);
+$require_login =        true;
 //More search engines
 /*
 $search_engines = array_merge($search_engines, array(
-        'Harvie\'s blog!'                   => 'http://blog.harvie.cz/?s='
+        		'Harvie\'s blog!' => 'http://blog.harvie.cz/?s='
 ));
 */
 //Bonuses
 if(isset($bonus_dir) && is_dir($bonus_dir)) {
-	$css_file =             $bonus_dir.'/themes/default/jukebox.css'; //CSS (Design/Theme)
+	$css_file =	$bonus_dir.'/themes/default/jukebox.css'; //CSS (Design/Theme)
 }
