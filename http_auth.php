@@ -12,7 +12,7 @@ $require_login = true; //Require login? (if false, no login needed) - WARNING!!!
 $location = '401'; //Location after logout - 401 = default logout page (can be overridden by ?logout=[LOCATION])
 //CopyLeft
 $ver = '2o1o-3.9';
-$link = '<a href="https://harvie.ath.cx/">harvie.ath.cx</a>';
+$link = '<a href="https://blog.harvie.cz/">blog.harvie.cz</a>';
 $banner = "Harvie's PHP HTTP-Auth script (v$ver)";
 $hbanner = "<hr /><i>$banner\n-\n$link</i>\n";
 $cbanner = "<!-- $banner -->\n";
