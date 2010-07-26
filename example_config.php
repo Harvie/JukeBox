@@ -4,7 +4,7 @@
  *
  * Quick Instalation HowTo:
  * 1.) Change $users array and $music_dir_url!
- * 2.) Rename this file to: _config.php
+ * 2.) Rename this file to: _config.php (underscore matters)
  * 3.) Place your music into the $music_dir ($music_dir_url must point to the same directory through webserver)
  * 4.) create file jbx/cache.db writeable by webserver (set permissions)
  * 5.) Refresh search database using $cache_passwd on search page
