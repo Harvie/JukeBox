@@ -3,9 +3,9 @@
  * Harvie's JuKe!Box configuration file.
  *
  * Quick Instalation HowTo:
- * 1.) Change $passwd and $music_dir_url!
- * 2.) Rename to: _config.php
- * 3.) Place your music into the $music_dir ($music_dir_url must lead to the same directory on web)
+ * 1.) Change $users array and $music_dir_url!
+ * 2.) Rename this file to: _config.php
+ * 3.) Place your music into the $music_dir ($music_dir_url must point to the same directory through webserver)
  * 4.) create file jbx/cache.db writeable by webserver (set permissions)
  * 5.) Refresh search database using $cache_passwd on search page
  */
@@ -16,11 +16,11 @@ $music_dir_url =        'http://your-server.net/jukebox/music'; //URL path to th
 $cache_passwd =         'renew123'; //You need this passwd to refresh search cache CHANGE IT!
 //Login
 $realm =                'music'; //HTTP Auth Banner
-$users = array(         //List of 'user' => 'password' touples CHANGE IT!
-                        'music' => 'Default-Secr3t_PaSsw0rd'
+$users = array(         //List of 'user' => 'password' pairs
+                        'music' => 'Default-Secr3t_PaSsw0rd' //CHANGE IT!
 );
 $require_login =        true;
-//More search engines
+//Additional search engines
 /*
 $search_engines = array_merge($search_engines, array(
         		'Harvie\'s blog!' => 'http://blog.harvie.cz/?s='
