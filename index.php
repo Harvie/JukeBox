@@ -347,7 +347,7 @@ if(isset($_GET['blank'])) {
 	<a name="up"></a>
 	<iframe src="about:blank" name="playframe-hide" width="0" height="0" style="border: none;" class="hide"></iframe><!-- -----------???--------------- -->
 	<span class="icon">&lt;</span> <a href="javascript: history.go(-1)" class="icon iback">BACK</a>
-	| <a href="?"><span class="icon ihome">HOME</span> (<?=$music_dir?>)</a>
+	| <a href="?" class="icon ihome">HOME&nbsp;(<?=$music_dir?>)</a>
 	| <a href="?help" class="icon ihelp">ABOUT/HELP</a>
 	| <a href="?logout" class="icon ilogout">LOGOUT</a>
 </div>

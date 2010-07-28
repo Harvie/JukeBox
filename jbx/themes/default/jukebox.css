@@ -99,7 +99,9 @@ tr:hover * a {	text-decoration: underline;}
 	background-repeat:no-repeat; 
 }
 
-.btntd { min-width:100px; }
+a.icon:hover { text-indent:18px; background-color:#000022; width:auto; }
+
+.btntd { min-width:120px; }
 
 *.iplay		{ background-image: url(icons/playlist.png); }
 *.irplay	{ background-image: url(icons/recursive.png); }
