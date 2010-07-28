@@ -244,7 +244,8 @@ function render_footer() {
 		'Don\'t be looser, use GNU/Linux! ;P',
 		'Make love and not war!',
 		'Take your chance! Prove yourself!',
-		'This software is free of charge. If you wan\'t to donate, please send some money to children in Africa/etc...'
+		'This software is free of charge. If you wan\'t to donate, please send some money to children in Africa/etc...',
+		'Fork <a href="http://github.com/harvie/jukebox">'.$GLOBALS['title'].'</a> on GIThub :-)<a href="http://github.com/harvie/jukebox"><img style="position: absolute; top: 0; left: 0; border: 0; height:120px; background-color:transparent;" src="http://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub" /></a>'
 	);
 
 	echo('<span id="quote" style="float: left;"><i><small>'.$quotes[rand(0,sizeof($quotes)-1)]."</small></i></span>\n");
