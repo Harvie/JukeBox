@@ -12,7 +12,7 @@ Version info:
  * 0.3   - Migrated to standalone WPAudioPlayer (better, nicer, with more functions)
  * 0.2   - Few new functions (search playlist, random,...)
  * 0.1.1 - Few little fixups, written help.html in Czech language ;o)
- * 0.1   - All functions works - TODO: bugfix & replace ugly code
+ * 0.1   - All functions are working - TODO: bugfix & replace ugly code
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 */
 
