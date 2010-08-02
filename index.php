@@ -1,6 +1,6 @@
 <?php require_once('./http_auth.php'); /*Delete this line to disable password protection*/ ?>
 <?php $exec_time = round(microtime(true), 3); /*
-Harvie's JuKe!Box
+Harvie's JuKe!Box (2oo7-2o1o)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Version info:
  * 0.3.6 - Now sorting also directories and have icon link support in css
