@@ -31,6 +31,7 @@ Zjednodušeně je aplikace lehce použitelná, lehce se instaluje, vše se dá n
 ##TODO
   * Turn jukebox into universal filelisting with plugins for playing music, videos, documents,...
   * Use HTML5 for playback instead of flash (when browsers will be ready)
+  * Nice URLs so Juke!Box will be traversable using lftp and similar tools (mod_rewrite?)
   * VLC plugin to browse, search and stream using JuKe!Box on server side
   * Documentation ( reuse old one: http://code.google.com/p/h-jukebox/wiki/AboutHelp )
   * Comment source a bit...

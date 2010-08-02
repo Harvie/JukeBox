@@ -3,3 +3,11 @@ Options -Indexes
 IndexIgnore *
 #Kill that stupid magic quotes!
 php_flag magic_quotes_gpc off
+
+<IfModule mod_rewrite.c>
+	#RewriteEngine On
+	#RewriteBase /
+	#RewriteCond %{REQUEST_URI} _music/(.*)?(.*)
+	#RewriteRule ^_music/([^\?]*)$ ?dir=$1
+	#RewriteRule ^_music/(.*)$ ?dir=$1
+</IfModule>
