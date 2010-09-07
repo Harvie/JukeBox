@@ -113,5 +113,6 @@ a.icon:hover { text-indent:18px; background-color:#000022; width:auto; }
 *.ihome		{ background-image: url(icons/home.png); }
 *.iback		{ background-image: url(icons/back.png); }
 *.ihelp		{ background-image: url(icons/help.png); }
+*.idjmode	{ background-image: url(icons/djmode.png); }
 
 */
