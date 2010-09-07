@@ -295,7 +295,7 @@ function flash_mp3_player() {
 }
 
 //GET
-if(isset($_GET['dj'])) { ?><frameset cols="*,*"><frame name="dj-left" src="./"><frame name="dj-right" src="./"></frameset><?php die(); }
+if(isset($_GET['dj'])) { ?><title><?php echo "DJ MODE @ $title"; ?></title><frameset cols="*,*"><frame name="dj-left" src="./"><frame name="dj-right" src="./"></frameset><?php die(); }
 if(isset($_GET['download'])) serve_download($playlist_name);
 if(isset($_GET['f'])) flash_mp3_player();
 if(isset($_GET['song'])) {
@@ -350,7 +350,7 @@ if(isset($_GET['blank'])) {
 	<a name="up"></a>
 	<iframe src="about:blank" name="playframe-hide" width="0" height="0" style="border: none;" class="hide"></iframe><!-- -----------???--------------- -->
 	<span class="icon">&lt;</span> <a href="javascript: history.go(-1)" class="icon iback">BACK</a>
-	| <a href="?" class="icon ihome">HOME&nbsp;(<?=$music_dir?>)</a>
+	| <a href="?" target="_parent" class="icon ihome">HOME&nbsp;(<?=$music_dir?>)</a>
 	| <a href="?dj" class="icon idjmode">DJ</a>
 	| <a href="?help" class="icon ihelp">ABOUT/HELP</a>
 	| <a href="?logout" class="icon ilogout">LOGOUT</a>
