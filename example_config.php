@@ -12,7 +12,6 @@
 //Config-basic
 $title =                'Harvie\'s&nbsp;JuKe!Box'; //Title of jukebox
 $music_dir =            'music'; //Local path to directory with music
-$base_url =             dirname($_SERVER['SCRIPT_NAME']); //URL of this directory ("./")
 $music_dir_url =        'http://your-server.net/jukebox/music'; //URL path to the same directory CHANGE IT!
 $cache_passwd =         'renew123'; //You need this passwd to refresh search cache CHANGE IT!
 //Login
@@ -29,5 +28,5 @@ $search_engines = array_merge($search_engines, array(
 */
 //Bonuses
 if(isset($bonus_dir) && is_dir($bonus_dir)) {
-	$css_file =	$base_url.'/'.$bonus_dir.'/themes/default/jukebox.css'; //CSS (Design/Theme)
+	$css_file =	$base_url.$bonus_dir.'/themes/default/jukebox.css'; //CSS (Design/Theme)
 }
