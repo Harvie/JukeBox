@@ -76,6 +76,7 @@ if(get_magic_quotes_gpc()) die("Error: magic_quotes_gpc needs to be disabled!\n"
 $useflash = is_file($flash_player_swf);
 
 //Little magic with directories ;o)
+if($_SERVER['PATH_INFO']!='') $_GET['dir']=$_SERVER['PATH_INFO'];
 $current_dir = ereg_replace('/+', '/', '/'.$_GET['dir'].'/');
 if(eregi('(/|\\\\)\\.\\.(/|\\\\)', $current_dir)) { //check for directory traversal ;)
 	header('Location: ?');
