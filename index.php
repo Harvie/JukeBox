@@ -18,7 +18,8 @@ Version info:
 
 //Config-basic
 $title = 		'Harvie\'s&nbsp;JuKe!Box'; //Title of jukebox
-$music_dir = 		'./music'; //Local path to directory with music
+$music_dir = 		'music'; //Local path to directory with music
+$base_url = 		dirname($_SERVER['SCRIPT_NAME']); //URL of this directory ("./")
 $music_dir_url = 	'http://your-server.net/jukebox/music'; //URL path to the same directory
 $cache_passwd = 	'renew123'; //You need this passwd to refresh search cache
 $sort =			3; //Sort? 0 = none, 1 = playlists, 2 = 1+listings; 3 = 2+search-EXPERIMENTAL! (sorting could eat lot of memory)
@@ -35,11 +36,11 @@ $default_random_count =	30; //How many random songs by defaul?
 
 //External files
 $indexlist = 		array('index.html', 'index.txt'); //Search for this file in each directory
-$bonus_dir =		'./jbx'; //Misc. files directory
+$bonus_dir =		'jbx'; //Misc. files directory
 ////
 $search_cache = 	$bonus_dir.'/cache.db'; //Database for searching music (php +rw) - .htaccess: Deny from all!!!
-$css_file =		$bonus_dir.'/themes/default/jukebox.css'; //CSS (Design)
-$favicon_file =		'./favicon.png'; //favicon
+$css_file =		$base_url.'/'.$bonus_dir.'/themes/default/jukebox.css'; //CSS (Design)
+$favicon_file =		$base_url.'/favicon.png'; //favicon
 $header_file =		$bonus_dir.'/header.html'; //header file
 $footer_file =		$bonus_dir.'/footer.html'; //footer file
 
@@ -280,7 +281,7 @@ function flash_mp3_player() {
 <style> * { margin: 0; padding: 0; border: 0; } </style></head><body>
 <object width="100%" height="344">
         <embed src="<?php
-		echo($GLOBALS['flash_player_swf'].$GLOBALS['flash_player_options']);
+		echo($GLOBALS['base_url'].'/'.$GLOBALS['flash_player_swf'].$GLOBALS['flash_player_options']);
 		if(isset($_GET['song'])) echo(rawurlencode($_GET['song']));
 		if(isset($_GET['playlist'])) generate_m3u($GLOBALS['dir'], dirname($GLOBALS['music_dir_url']), isset($_GET['recursive']), ',', true);
 	?>"
