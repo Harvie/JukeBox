@@ -204,8 +204,8 @@ function render_file_line($dir, $item, $dir_url, $index, $filesize, $parent = fa
 			'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>/'.
 			'<a href="?blank" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifstop">S</a>');
 	}
-	echo('&nbsp;</td><td class="maximize-width"><a href="'.$temp.'">'.unxss(str_replace('-',' - ',str_replace('_', ' ', 
-$item))).'</a></td><td>'.$filesize."&nbsp;MiB&nbsp;</td></tr>\n");			
+	echo('&nbsp;</td><td class="maximize-width"><a href="'.$temp.'">'.unxss(str_replace('-',' - ',str_replace('_', ' ', $item))).
+	'</a></td><td>'.$filesize."&nbsp;MiB&nbsp;</td></tr>\n");
 }
 
 function render_dir_line($current_dir, $item, $i) {
@@ -215,7 +215,7 @@ function render_dir_line($current_dir, $item, $i) {
 	'<td><a href="#up">'.$i.'</a></td><td class="btntd"><a href="?download&playlist&dir='.$temp.'" class="icon iplay">P</a>/'.
 	'<a href="?download&recursive&playlist&dir='.$temp.'" class="icon irplay">R</a>');
 	if($GLOBALS['useflash']) echo('/<a href="?f&playlist&dir='.$temp.'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>');
-	echo('</td><td colspan="100%" class="maximize-width"><span class="icon ifolder">[DIR] </span><a href="?dir='.$temp.'">'.unxss(str_replace('_', ' ', $item)).
+	echo('</td><td colspan="100%" class="maximize-width"><span class="icon ifolder">[DIR] </span><a href="?dir='.$temp.'">'.unxss(str_replace('-',' - ',str_replace('_', ' ', $item))).
 	"</a></td></tr>\n");
 }
 
