@@ -29,6 +29,7 @@ Zjednodušeně je aplikace lehce použitelná, lehce se instaluje, vše se dá n
 
 
 ##TODO
+  * Autodetect absolute URL of music directory (replace https with http as some music players are not able to handle TLS)
   * Turn jukebox into universal filelisting with plugins for playing music, videos, documents,...
     * some system for registering regex-based hooks on filenames
     * directory and file lines should be rendered by the same function (using those hooks - directory ends with slash)
