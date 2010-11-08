@@ -30,9 +30,13 @@ Zjednodušeně je aplikace lehce použitelná, lehce se instaluje, vše se dá n
 
 ##TODO
   * Turn jukebox into universal filelisting with plugins for playing music, videos, documents,...
+    * some system for registering regex-based hooks on filenames
+    * directory and file lines should be rendered by the same function (using those hooks - directory ends with slash)
   * Use HTML5 for playback instead of flash (when browsers will be ready)
-  * Nice URLs so Juke!Box will be traversable using lftp and similar tools (mod_rewrite?)
+  * Nice URLs so Juke!Box will be traversable using lftp and similar tools (PATH_INFO, mod_rewrite?)
+    * Need to add function that will return URL to directory listing of desired directory (should detect if PATH_INFO is in use)
   * VLC plugin to browse, search and stream using JuKe!Box on server side
+    * there's some LUA API to do this... just need to check some examples...
   * Documentation ( reuse old one: http://code.google.com/p/h-jukebox/wiki/AboutHelp )
   * Comment source a bit...
 
