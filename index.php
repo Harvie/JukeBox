@@ -58,7 +58,7 @@ $search_engines = array(
 $flash_player_swf =	$bonus_dir.'/player.swf'; //path to musicplayer
 $flash_player_frame =	'playframe-show'; //FlashPlayer Target (playframe-show|playframe-hide) - usefull for compatibility with old music player
 $flash_player_options = '?bg=000099&loader=000000&tracker=AAAAFF&skip=FFFFFF' //.'&leftbg=000077&rightbg=000077&righticon=999999'
-                        .'&autostart=yes&initialvolume=100&soundFile='; //& arguments (urlencoded song url will be added)
+                        .'&autostart=yes&initialvolume=100&buffer=30&animation=no&soundFile='; //& arguments (urlencoded song url will be added)
 
 //Security
 error_reporting(0); //This will disable error reporting, wich can pass sensitive data to users
