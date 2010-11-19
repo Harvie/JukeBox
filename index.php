@@ -292,7 +292,7 @@ function flash_mp3_player() {
                 transparentpagebg="yes" 
                 quality="low"
                 width="100%" height="24px"                
-        >You need Adobe Flash enabled browser to play records directly in website.</embed>
+        ><!-- You need Adobe Flash enabled browser to play records directly in website. --></embed>
 </object></body></html>
 <?php die();
 }
@@ -333,7 +333,7 @@ if(isset($_GET['random'])) {
 if(isset($_GET['blank'])) {
 	?>
 	<link rel="stylesheet" type="text/css" href="<?=$css_file?>" />
-	<body class="blank"><div class="blank"><b>Music player</b> <small><i>(click 'F' link next to the song name to start, 'S' to stop...)</i></small></div></body>
+	<body class="blank"><div class="blank" title="Currently you will need FlashPlayer to get this working..."><b>Music player</b> <small><i>(click 'F' link next to the song name to start, 'S' to stop...)</i></small></div></body>
 	<?php die();
 }
 
