@@ -2,7 +2,8 @@
  * Example CSS for Harvie's JuKe!Box
  */
 
-*:not(html):not(body) {	border-radius:6px; -moz-border-radius:5px; } 
+*:not(html):not(body):not(.noradius) {	border-radius:6px; -moz-border-radius:5px; }
+.noradius {				border-radius:0; -moz-border-radius:0; }
 
 body {
 	color: lightblue;
@@ -58,6 +59,11 @@ td {
 	background-image: none;
 	color: white;
 	background-color: #000099;
+}
+
+.nomarpad {
+	margin:	0;
+	padding: 0;
 }
 
 .directory {

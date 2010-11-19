@@ -223,10 +223,11 @@ function render_tr_playframe_show() {
 	if($GLOBALS['flash_player_frame'] == 'playframe-show' && $GLOBALS['useflash']) { ?>
 <tr id="playframe-tr">
 <td><a href="?blank" target="playframe-show" title="Stop playback" class="icon ifstop">S</a></td>
-<td colspan="100%">
+<td colspan="100%" class="noradius nomarpad">
 <iframe
 src="?blank"
 name="playframe-show"
+class="noradius nomarpad"
 width="100%"
 height="24"
 style="border:none;"
