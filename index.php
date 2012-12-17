@@ -21,7 +21,7 @@ $title = 		'Harvie\'s&nbsp;JuKe!Box'; //Title of jukebox
 $music_dir = 		'music'; //Local path to directory with music
 $base_url = 		preg_replace('/[^\/]*$/', '', $_SERVER['SCRIPT_NAME']); //URL of this directory (always ends with slash)
 $music_dir_url = 	'http://your-server.net/jukebox/music'; //URL path to the same directory
-$cache_passwd = 	'renew123'; //You need this passwd to refresh search cache
+$cache_passwd = 	''; //You need this passwd to refresh search cache
 $sort =			3; //Sort? 0 = none, 1 = playlists, 2 = 1+listings; 3 = 2+search-EXPERIMENTAL! (sorting could eat lot of memory)
 $access_limit =		40; //How many files could be accessed without using cache (while searching)
 
@@ -307,10 +307,11 @@ if(isset($_GET['song'])) {
 
 
 
-if($_POST['cache-refresh'] == $cache_passwd) {
+if(isset($_POST['cache-refresh']) && $_POST['cache-refresh'] == $cache_passwd) {
 	generate_search_cache($music_dir, $search_cache);
 	die("\n");
 }
+
 
 if(isset($_GET['playlist'])) {
 	generate_m3u($dir, dirname($music_dir_url), isset($_GET['recursive']));

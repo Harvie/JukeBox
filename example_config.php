@@ -13,7 +13,7 @@
 $title =                'Harvie\'s&nbsp;JuKe!Box'; //Title of jukebox
 $music_dir =            'music'; //Local path to directory with music
 $music_dir_url =        'http://your-server.net/jukebox/music'; //URL path to the same directory CHANGE IT!
-$cache_passwd =         'renew123'; //You need this passwd to refresh search cache CHANGE IT!
+$cache_passwd =         ''; //You need this passwd to refresh search cache CHANGE IT!
 //Login
 $realm =                'music'; //HTTP Auth Banner
 $users = array(         //List of 'user' => 'password' pairs
