@@ -217,8 +217,8 @@ src="?blank"
 name="playframe-show"
 class="noradius nomarpad"
 width="100%"
-height="24"
-style="border:none;"
+height="48"
+style="border:none;vertical-align:middle;"
 ></iframe></td></tr>
 <?php }
 
@@ -277,7 +277,7 @@ function html5_player() {
 ?><!DOCTYPE html>
 <html><head><meta charset="<?= $GLOBALS['charset'] ?>"><title><?= htmlspecialchars($title, ENT_QUOTES, $GLOBALS['charset']) ?>: Music Player</title>
 <link rel="stylesheet" type="text/css" href="<?= htmlspecialchars($css, ENT_QUOTES) ?>" />
-<style> * { margin: 0; padding: 0; border: 0; } body { min-height: 24px; } </style></head><body>
+</head><body class="jbx-player">
 <audio id="jbx-audio" controls preload="metadata"<?= $song_url && !$is_playlist ? ' src="'.htmlspecialchars($song_url, ENT_QUOTES).'" autoplay' : '' ?>></audio>
 <?php if($is_playlist) { ?>
 <script>
