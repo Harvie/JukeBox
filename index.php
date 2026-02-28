@@ -275,16 +275,16 @@ function html5_player() {
 	$playlist_url = '?' . http_build_query($playlist_query);
 	header('Content-Type: text/html; charset='.$GLOBALS['charset']);
 ?><!DOCTYPE html>
-<html><head><meta charset="<?= $GLOBALS['charset'] ?>"><title><?= htmlspecialchars($title, ENT_QUOTES, $GLOBALS['charset']) ?>: Music Player</title>
+<html class="jbx-player-html"><head><meta charset="<?= $GLOBALS['charset'] ?>"><title><?= htmlspecialchars($title, ENT_QUOTES, $GLOBALS['charset']) ?>: Music Player</title>
 <link rel="stylesheet" type="text/css" href="<?= htmlspecialchars($css, ENT_QUOTES) ?>" />
 </head><body class="jbx-player">
-<div class="jbx-player-bar">
+<table class="jbx-player-bar" cellpadding="0" cellspacing="0"><tr>
 <?php if($is_playlist) { ?>
-<button type="button" class="jbx-skip" id="jbx-prev" title="Previous" aria-label="Previous">&#8249;</button>
-<button type="button" class="jbx-skip" id="jbx-next" title="Next" aria-label="Next">&#8250;</button>
+<td class="jbx-skip-cell"><button type="button" class="jbx-skip" id="jbx-prev" title="Previous" aria-label="Previous">&#8249;</button></td>
+<td class="jbx-skip-cell"><button type="button" class="jbx-skip" id="jbx-next" title="Next" aria-label="Next">&#8250;</button></td>
 <?php } ?>
-<audio id="jbx-audio" controls preload="metadata"<?= $song_url && !$is_playlist ? ' src="'.htmlspecialchars($song_url, ENT_QUOTES).'" autoplay' : '' ?>></audio>
-</div>
+<td class="jbx-audio-cell"><audio id="jbx-audio" controls preload="metadata"<?= $song_url && !$is_playlist ? ' src="'.htmlspecialchars($song_url, ENT_QUOTES).'" autoplay' : '' ?>></audio></td>
+</tr></table>
 <?php if($is_playlist) { ?>
 <script>
 (function(){
