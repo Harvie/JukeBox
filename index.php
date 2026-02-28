@@ -54,12 +54,6 @@ $search_engines = array(
 	'YOUTube.com' 			=> 'http://youtube.com/results?search_query='
 );
 
-//Flash MusicPlayer (info about settings: http://wpaudioplayer.com/standalone)
-$flash_player_swf =	$bonus_dir.'/player.swf'; //path to musicplayer
-$flash_player_frame =	'playframe-show'; //FlashPlayer Target (playframe-show|playframe-hide) - usefull for compatibility with old music player
-$flash_player_options = '?bg=000099&loader=000000&tracker=AAAAFF&skip=FFFFFF' //.'&leftbg=000077&rightbg=000077&righticon=999999'
-                        .'&autostart=yes&initialvolume=100&buffer=30&animation=no&soundFile='; //& arguments (urlencoded song url will be added)
-
 //Security
 error_reporting(0); //This will disable error reporting, wich can pass sensitive data to users
 
@@ -70,9 +64,6 @@ error_reporting(0); //This will disable error reporting, wich can pass sensitive
 
 //Init
 srand(time());
-
-//Enable flash?
-$useflash = is_file($flash_player_swf);
 
 //Little magic with directories ;o)
 if(($_SERVER['PATH_INFO'] ?? '') != '') $_GET['dir'] = $_SERVER['PATH_INFO'];
@@ -197,10 +188,10 @@ function render_file_line($dir, $item, $dir_url, $index, $filesize, $parent = fa
 			substr(str_replace(array('&','%2F'), array('%26','/'), (rawurlencode(dirname($dir.$item)))), strlen($GLOBALS['music_dir'])).
 			'" class="icon ifolder">D</a>');
 	}
-	if($GLOBALS['useflash'] && preg_match('/\.('.$GLOBALS['m3u_exts'].')$/i', $item)) {
+	if(preg_match('/\.('.$GLOBALS['m3u_exts'].')$/i', $item)) {
 		echo('/<a href="?f&song='.rawurlencode($temp).
-			'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>/'.
-			'<a href="?blank" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifstop">S</a>');
+			'" target="playframe-show" class="icon ifplay">F</a>/'.
+			'<a href="?blank" target="playframe-show" class="icon ifstop">S</a>');
 	}
 	echo('&nbsp;</td><td class="maximize-width"><a href="'.$temp.'">'.unxss(str_replace('-',' - ',str_replace('_', ' ', $item))).
 	'</a></td><td>'.$filesize."&nbsp;MiB&nbsp;</td></tr>\n");
@@ -212,13 +203,12 @@ function render_dir_line($current_dir, $item, $i) {
 	echo("<tr class=\"$parclass directory\" bgcolor=\"$parcolor\">".
 	'<td><a href="#up">'.$i.'</a></td><td class="btntd"><a href="?download&playlist&dir='.$temp.'" class="icon iplay">P</a>/'.
 	'<a href="?download&recursive&playlist&dir='.$temp.'" class="icon irplay">R</a>');
-	if($GLOBALS['useflash']) echo('/<a href="?f&playlist&dir='.$temp.'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>');
+	echo('/<a href="?f&playlist&dir='.$temp.'" target="playframe-show" class="icon ifplay">F</a>');
 	echo('</td><td colspan="100%" class="maximize-width"><span class="icon ifolder">[DIR] </span><a href="?dir='.$temp.'">'.unxss(str_replace('-',' - ',str_replace('_', ' ', $item))).
 	"</a></td></tr>\n");
 }
 
-function render_tr_playframe_show() {
-	if($GLOBALS['flash_player_frame'] == 'playframe-show' && $GLOBALS['useflash']) { ?>
+function render_tr_playframe_show() { ?>
 <tr id="playframe-tr">
 <td><a href="?blank" target="playframe-show" title="Stop playback" class="icon ifstop">S</a></td>
 <td colspan="100%" class="noradius nomarpad">
@@ -229,10 +219,8 @@ class="noradius nomarpad"
 width="100%"
 height="24"
 style="border:none;"
-transparentpagebg="yes"
 ></iframe></td></tr>
-	<?php }
-}
+<?php }
 
 function render_footer() {
 	$quotes = array(
@@ -274,31 +262,50 @@ function explode_path($dir) {
 	return('<a href="?">.</a>/'.$out);
 }
 
-function flash_mp3_player() {
-	?>
-<html><head><title><?=$GLOBALS['title']?>: Flash Music Player Plugin</title>
-<style> * { margin: 0; padding: 0; border: 0; } </style></head><body>
-<object width="100%" height="344">
-        <embed src="<?php
-		echo($GLOBALS['base_url'].$GLOBALS['flash_player_swf'].$GLOBALS['flash_player_options']);
-		if(isset($_GET['song'])) echo(rawurlencode($_GET['song']));
-		if(isset($_GET['playlist'])) generate_m3u($GLOBALS['dir'], dirname($GLOBALS['music_dir_url']), isset($_GET['recursive']), ',', true);
-	?>"
-                type="application/x-shockwave-flash"
-                allowscriptaccess="never"
-                allowfullscreen="true"
-                transparentpagebg="yes" 
-                quality="low"
-                width="100%" height="24px"                
-        ><!-- You need Adobe Flash enabled browser to play records directly in website. --></embed>
-</object></body></html>
-<?php die();
+function html5_player() {
+	$song_url = isset($_GET['song']) ? $_GET['song'] : null;
+	$is_playlist = isset($_GET['playlist']);
+	$css = $GLOBALS['css_file'];
+	$title = $GLOBALS['title'];
+	// Build playlist URL (same as existing ?playlist endpoint - returns m3u, one URL per line)
+	$playlist_query = array('playlist' => '');
+	if (isset($_GET['dir'])) $playlist_query['dir'] = $_GET['dir'];
+	if (isset($_GET['recursive'])) $playlist_query['recursive'] = '';
+	if (isset($_GET['search'])) $playlist_query['search'] = $_GET['search'];
+	$playlist_url = '?' . http_build_query($playlist_query);
+	header('Content-Type: text/html; charset='.$GLOBALS['charset']);
+?><!DOCTYPE html>
+<html><head><meta charset="<?= $GLOBALS['charset'] ?>"><title><?= htmlspecialchars($title, ENT_QUOTES, $GLOBALS['charset']) ?>: Music Player</title>
+<link rel="stylesheet" type="text/css" href="<?= htmlspecialchars($css, ENT_QUOTES) ?>" />
+<style> * { margin: 0; padding: 0; border: 0; } body { min-height: 24px; } </style></head><body>
+<audio id="jbx-audio" controls preload="metadata"<?= $song_url && !$is_playlist ? ' src="'.htmlspecialchars($song_url, ENT_QUOTES).'" autoplay' : '' ?>></audio>
+<?php if($is_playlist) { ?>
+<script>
+(function(){
+	var playlistUrl = <?= json_encode($playlist_url) ?>;
+	var el = document.getElementById('jbx-audio');
+	function playNext(list, idx) {
+		if (idx >= list.length) return;
+		el.src = list[idx];
+		el.onended = function() { playNext(list, idx + 1); };
+		el.play();
+	}
+	fetch(playlistUrl).then(function(r){ return r.text(); }).then(function(text){
+		var list = text.trim().split(/\r?\n/).filter(function(u){ return u.length; });
+		if (list.length) playNext(list, 0);
+	});
+})();
+</script>
+<?php } ?>
+</body></html>
+<?php
+	die();
 }
 
 //GET
 if(isset($_GET['dj'])) { ?><title><?php echo "DJ MODE @ $title"; ?></title><frameset cols="*,*"><frame name="dj-left" src="./"><frame name="dj-right" src="./"></frameset><?php die(); }
 if(isset($_GET['download'])) serve_download($playlist_name);
-if(isset($_GET['f'])) flash_mp3_player();
+if(isset($_GET['f'])) html5_player();
 if(isset($_GET['song'])) {
 	die($_GET['song']."\r\n");
 }
@@ -332,7 +339,7 @@ if(isset($_GET['random'])) {
 if(isset($_GET['blank'])) {
 	?>
 	<link rel="stylesheet" type="text/css" href="<?=$css_file?>" />
-	<body class="blank"><div class="blank" title="Currently you will need FlashPlayer to get this working..."><b>Music player</b> <small><i>(click 'F' link next to the song name to start, 'S' to stop...)</i></small></div></body>
+	<body class="blank"><div class="blank" title="Stopped"><b>Music player</b> <small><i>(click F next to a song or folder to play, S to stop)</i></small></div></body>
 	<?php die();
 }
 
@@ -431,7 +438,7 @@ $i = 0;
 echo('<table border="1" width="100%">');
 render_tr_playframe_show();
 echo('<tr class="directory"><td>S</td><td><a href="?download&playlist&search='.unxss($_GET['search']).'" class="icon iplay">P</a>');
-if($GLOBALS['useflash']) echo('/<a href="?f&playlist&search='.unxss($_GET['search']).'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>');
+echo('/<a href="?f&playlist&search='.unxss($_GET['search']).'" target="playframe-show" class="icon ifplay">F</a>');
 echo('</td><td colspan="100%">Search: '.unxss($_GET['search']).'</td></tr>');
 
 while(!feof($searchfp)) {
@@ -456,9 +463,7 @@ foreach($indexlist as $index) @readfile($dir.$index);
 
 <tr class="directory"><td>&gt;</td>
 <td><a href="?download&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($current_dir))?>" class="icon iplay">P</a>/<a
-href="?download&recursive&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($current_dir))?>" class="icon irplay">R</a><?php
-if($GLOBALS['useflash']) echo('/<a href="?f&playlist&dir='.str_replace('%2F', '/', rawurlencode($current_dir)).'"  target="'.$GLOBALS['flash_player_frame'].'" 
-class="icon ifplay">F</a>'); ?>
+href="?download&recursive&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($current_dir))?>" class="icon irplay">R</a>/<a href="?f&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($current_dir))?>" target="playframe-show" class="icon ifplay">F</a>
 </td>
 <td colspan="100%"><?=unxss($dir)?></td></tr>
 <tr><td>^</td><td>&nbsp;</td><td colspan="100%" class="directory"><span class="icon ifolder">[DIR] </span><a href="?dir=<?=rawurlencode($parent_dir)?>">.. 

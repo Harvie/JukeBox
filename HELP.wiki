@@ -28,7 +28,7 @@ P - Přehrát (je nutné stáhnout playlist.m3u a otevřít v přehrávači hudb
   - U složek tato volba přehraje všechny zvukové soubory, které složka obsahuje
 R - To samé jako P, ale přehraje se i hudba v podsložkách (POZOR! raději nepoštět na velké adresáře!!!)
 D - Otevře nadřazenou složku pro daný soubor (pouze u vyhledávání)
-F - Spustí přehrávání v prohlížeči (vyžaduje flash), otevřete odkaz v novém okně, pokud si chcete dál prohlížet knihovnu...
+F - Spustí přehrávání v prohlížeči (HTML5), otevřete odkaz v novém okně, pokud si chcete dál prohlížet knihovnu...
 S - Zastaví přehrávání v prohlížeči
 }}}
 == Vyhledávání ==
@@ -76,13 +76,12 @@ $m3u_exts =             Přípony souborů, které se zobrazí v playlistu a ve 
 $indexlist =            Pole se jmény souborů, které se mají případně zobrazit před výpisem složky
 $bonus_dir =            Adresář s pomocnými soubory
 $search_cache =         Cesta k vyhledávací cache
-$flash_player =         Cesta k swf souboru webového přehrávače
-$css_file =             Cesta k CSS stylu
+$css_file =             Cesta k CSS stylu (používá i vestavěný HTML5 přehrávač)
 }}}
 
 == Něco nefunguje ==
 
   * Skript - potřebujete webserver s podporou PHP
   * Vyhledávání - skript nemá práva pro zápis/čtení databáze, nebo databáze ještě nebyla vytvořená...
-  * Přehrávání v prohlížeči - není přítomný swf soubor přehrávače, prohlížeč nepodporuje flash, nebo inline framy...
+  * Přehrávání v prohlížeči - prohlížeč nemusí podporovat daný formát (MP3/Ogg/WAV fungují v HTML5), nebo inline framy...
   * Něco jiného - RTFM && UTFS && UTFG...
