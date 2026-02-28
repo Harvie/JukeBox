@@ -70,16 +70,14 @@ error_reporting(0); //This will disable error reporting, wich can pass sensitive
 
 //Init
 srand(time());
-@ini_set('magic_quotes_gpc' , 'off');
-if(get_magic_quotes_gpc()) die("Error: magic_quotes_gpc needs to be disabled!\n");
 
 //Enable flash?
 $useflash = is_file($flash_player_swf);
 
 //Little magic with directories ;o)
-if($_SERVER['PATH_INFO']!='') $_GET['dir']=$_SERVER['PATH_INFO'];
-$current_dir = ereg_replace('/+', '/', '/'.$_GET['dir'].'/');
-if(eregi('(/|\\\\)\\.\\.(/|\\\\)', $current_dir)) { //check for directory traversal ;)
+if(($_SERVER['PATH_INFO'] ?? '') != '') $_GET['dir'] = $_SERVER['PATH_INFO'];
+$current_dir = preg_replace('/\/+/', '/', '/'.($_GET['dir'] ?? '').'/');
+if(preg_match('#(/|\\\\)\\.\\.(/|\\\\)#', $current_dir)) { //check for directory traversal ;)
 	header('Location: ?');
 	die('Error - directory not found!');
 }
@@ -116,7 +114,7 @@ function generate_m3u($dir, $prefix='', $recursive=0, $nl="\r\n", $doubleenc=0) 
 		$dd = opendir($dir);
 		while(($item = readdir($dd)) != false) {
         		if($item == '.' || $item == '..') continue;
-	                if( is_file($dir.$item) && eregi(('\.('.$GLOBALS['m3u_exts'].')$'), $item) ) {
+	                if( is_file($dir.$item) && preg_match('/\.('.$GLOBALS['m3u_exts'].')$/i', $item) ) {
 				if($GLOBALS['sort'] > 0) {
 					$temp[] = $item;
 				} else {
@@ -131,10 +129,10 @@ function generate_m3u($dir, $prefix='', $recursive=0, $nl="\r\n", $doubleenc=0) 
 		}
 	} else {
 		if(!($searchfp = fopen($GLOBALS['search_cache'], 'r')))
-			die("Cannot read cache from $outfile<br />Refresh cache or set permissions properly!<br />\n");
+			die("Cannot read cache from ".$GLOBALS['search_cache']."<br />Refresh cache or set permissions properly!<br />\n");
 		while(!feof($searchfp)) {
 			$line = trim(fgets($searchfp));
-			if(@eregi(str_replace(' ', '(.*)', unational($_GET['search'])), unational($line))) {
+			if(@preg_match('~'.str_replace(' ', '(.*)', unational($_GET['search'] ?? '')).'~i', unational($line))) {
 				$line=(dirname($GLOBALS['music_dir_url']).'/'.str_replace('%2F', '/', (rawurlencode($line))).$nl);
 				if($doubleenc) $line = rawurlencode($line);
 				echo($line);
@@ -157,7 +155,7 @@ function write_search_cache($dir, $outfp) {
         $dd = opendir($dir);
         while($item = readdir($dd)) {
                 if($item == '.' || $item == '..') continue;
-                if( is_file($dir.$item) && eregi(('\.('.$GLOBALS['m3u_exts'].')$'), $item) ) {
+                if( is_file($dir.$item) && preg_match('/\.('.$GLOBALS['m3u_exts'].')$/i', $item) ) {
                         fwrite($outfp, $dir.$item."\n");
                 }
                 if(is_dir($dir.$item)) {
@@ -199,7 +197,7 @@ function render_file_line($dir, $item, $dir_url, $index, $filesize, $parent = fa
 			substr(str_replace(array('&','%2F'), array('%26','/'), (rawurlencode(dirname($dir.$item)))), strlen($GLOBALS['music_dir'])).
 			'" class="icon ifolder">D</a>');
 	}
-	if($GLOBALS['useflash'] && eregi(('\.('.$GLOBALS['m3u_exts'].')$'), $item)) {
+	if($GLOBALS['useflash'] && preg_match('/\.('.$GLOBALS['m3u_exts'].')$/i', $item)) {
 		echo('/<a href="?f&song='.rawurlencode($temp).
 			'" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifplay">F</a>/'.
 			'<a href="?blank" target="'.$GLOBALS['flash_player_frame'].'" class="icon ifstop">S</a>');
@@ -259,12 +257,12 @@ seconds</small></span>');
 }
 
 function unxss($string) {
-	return htmlspecialchars($string);
+	return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE, $GLOBALS['charset']);
 }
 
 function explode_path($dir) {
 	$dir = substr($dir, strlen($GLOBALS['music_dir'])+1);
-	$temp = split('/', ereg_replace('/+', '/', $dir));
+	$temp = explode('/', preg_replace('/\/+/', '/', $dir));
 	$out = '';
 	for($j=sizeof($temp)-1;$j>0;$j--) {
 		$dir = '';
@@ -321,7 +319,7 @@ if(isset($_GET['playlist'])) {
 if(isset($_GET['random'])) {
 	$flen = 0;
 	if(!($searchfp = fopen($search_cache, 'r')))
-		die("Cannot read cache from $outfile<br />Refresh cache or set permissions properly!<br />\n");
+		die("Cannot read cache from ".$search_cache."<br />Refresh cache or set permissions properly!<br />\n");
 	while(!feof($searchfp)) { fgets($searchfp); $flen++; }
 	for($i=0; $i<$_GET['random']; $i++) {
 		rewind($searchfp);
@@ -392,7 +390,7 @@ playlist?"
 	<form action="?" method="GET" align="right" style="display: inline;">
 		<span class="icon isearch"></span><input type="search" name="search" autofocus placeholder="search regexp..."
 			title="Search in music/google/lyrics/mp3/youtube; Hint: You can use regular expressions in search query..."
-			value="<?=unxss($_GET['search'])?>"
+			value="<?=unxss($_GET['search'] ?? '')?>"
 		/>
 		<input type="submit" value="search" title="Search in this JuKe!Box..." />
 	</form>
@@ -427,7 +425,7 @@ if(!isset($_GET['search'])) {
 echo('<small>Search DB size: '.(filesize($search_cache)/1024)." kB<br /></small>\n");
 
 if(!($searchfp = fopen($search_cache, 'r')))
-	die("Cannot read cache from $outfile<br />Refresh cache or set permissions properly!<br />\n");
+	die("Cannot read cache from ".$search_cache."<br />Refresh cache or set permissions properly!<br />\n");
 
 $i = 0;
 echo('<table border="1" width="100%">');
@@ -439,7 +437,7 @@ echo('</td><td colspan="100%">Search: '.unxss($_GET['search']).'</td></tr>');
 while(!feof($searchfp)) {
 	$line = trim(fgets($searchfp));
 	$parclass=($i%2?'even':'odd'); $parcolor=($i%2?'lightblue':'white');
-	if(@eregi(str_replace(' ', '(.*)', unational($_GET['search'])), unational($line))) {
+	if(@preg_match('~'.str_replace(' ', '(.*)', unational($_GET['search'] ?? '')).'~i', unational($line))) {
 		$i++;
 		$filesize = 0; if($i <= $access_limit) $filesize = filesize($line); else $filesize = 'n/a';
 		render_file_line('', $line, $music_dir_url, $i, $filesize, true);

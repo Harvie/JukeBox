@@ -45,9 +45,9 @@ $cbanner = "<!-- $banner -->\n";
     die(); //Don't forget!!!
   }
 
-//Backward compatibility
-if(isset($_SERVER['PHP_AUTH_USER']) && $_SERVER['PHP_AUTH_PW'] != '') $PHP_AUTH_USER = $_SERVER['PHP_AUTH_USER'];
-if(isset($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_PW'] != '') $PHP_AUTH_PW = $_SERVER['PHP_AUTH_PW'];
+//Backward compatibility (use isset to avoid undefined array key in PHP 8)
+if(isset($_SERVER['PHP_AUTH_USER'])) $PHP_AUTH_USER = $_SERVER['PHP_AUTH_USER'];
+if(isset($_SERVER['PHP_AUTH_PW'])) $PHP_AUTH_PW = $_SERVER['PHP_AUTH_PW'];
 
 //Logout
 if(isset($_GET['logout'])) { //script.php?logout
