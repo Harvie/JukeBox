@@ -471,6 +471,10 @@ href="?download&recursive&playlist&dir=<?=str_replace('%2F', '/', rawurlencode($
 <?php
 
 $i = 0;
+if($sort > 1) {
+	$itemsf = [];
+	$itemsd = [];
+}
 $dd = opendir($dir);
 for($s=2;$s;$s--) { while(($item = readdir($dd)) != false) {
 	if($item == '.' || $item == '..') continue;
