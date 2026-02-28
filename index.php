@@ -278,21 +278,32 @@ function html5_player() {
 <html><head><meta charset="<?= $GLOBALS['charset'] ?>"><title><?= htmlspecialchars($title, ENT_QUOTES, $GLOBALS['charset']) ?>: Music Player</title>
 <link rel="stylesheet" type="text/css" href="<?= htmlspecialchars($css, ENT_QUOTES) ?>" />
 </head><body class="jbx-player">
+<div class="jbx-player-bar">
+<?php if($is_playlist) { ?>
+<button type="button" class="jbx-skip" id="jbx-prev" title="Previous" aria-label="Previous">&#8249;</button>
+<button type="button" class="jbx-skip" id="jbx-next" title="Next" aria-label="Next">&#8250;</button>
+<?php } ?>
 <audio id="jbx-audio" controls preload="metadata"<?= $song_url && !$is_playlist ? ' src="'.htmlspecialchars($song_url, ENT_QUOTES).'" autoplay' : '' ?>></audio>
+</div>
 <?php if($is_playlist) { ?>
 <script>
 (function(){
 	var playlistUrl = <?= json_encode($playlist_url) ?>;
 	var el = document.getElementById('jbx-audio');
-	function playNext(list, idx) {
-		if (idx >= list.length) return;
+	var list = [];
+	var idx = 0;
+	function playAt(i) {
+		if (i < 0 || i >= list.length) return;
+		idx = i;
 		el.src = list[idx];
-		el.onended = function() { playNext(list, idx + 1); };
+		el.onended = function() { if (idx + 1 < list.length) playAt(idx + 1); };
 		el.play();
 	}
+	document.getElementById('jbx-prev').onclick = function() { playAt(idx - 1); };
+	document.getElementById('jbx-next').onclick = function() { playAt(idx + 1); };
 	fetch(playlistUrl).then(function(r){ return r.text(); }).then(function(text){
-		var list = text.trim().split(/\r?\n/).filter(function(u){ return u.length; });
-		if (list.length) playNext(list, 0);
+		list = text.trim().split(/\r?\n/).filter(function(u){ return u.length; });
+		if (list.length) playAt(0);
 	});
 })();
 </script>

@@ -67,10 +67,38 @@ body.jbx-player {
 	padding: 0;
 	border: 0;
 	height: 48px;
-	overflow: hidden;
-}
-body.jbx-player #jbx-audio {
 	width: 100%;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+body.jbx-player .jbx-player-bar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: 100%;
+	height: 48px;
+	box-sizing: border-box;
+}
+body.jbx-player .jbx-player-bar .jbx-skip {
+	flex: 0 0 auto;
+	width: 32px;
+	height: 32px;
+	margin: 0 2px;
+	padding: 0;
+	border: 1px solid rgba(255,255,255,0.5);
+	background: #000099;
+	color: white;
+	font-size: 18px;
+	line-height: 1;
+	cursor: pointer;
+	vertical-align: middle;
+}
+body.jbx-player .jbx-player-bar .jbx-skip:hover {
+	background: #0000cc;
+}
+body.jbx-player .jbx-player-bar #jbx-audio {
+	flex: 1 1 0;
+	min-width: 0;
 	height: 48px;
 	display: block;
 }
