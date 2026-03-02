@@ -67,17 +67,18 @@ body.jbx-player {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	height: 48px;
 	width: 100%;
 	overflow-x: hidden;
 	overflow-y: hidden;
 	box-sizing: border-box;
 }
-body.jbx-player .jbx-player-bar,
-body.jbx-player .jbx-player-bar * {
-	border-radius: 0;
+
+audio {
+	width: 100%; margin: 0; padding: 0;
+	filter: hue-rotate(0deg) saturate(20);
 }
-body.jbx-player table.jbx-player-bar {
+
+table.jbx-player-table {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -86,34 +87,14 @@ body.jbx-player table.jbx-player-bar {
 	width: 100%;
 	height: 48px;
 }
-body.jbx-player table.jbx-player-bar td {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	vertical-align: middle;
-}
-body.jbx-player td.jbx-skip-cell {
-	width: 36px;
-}
-body.jbx-player td.jbx-audio-cell {
-	width: auto;
-}
-body.jbx-player .jbx-skip {
-	width: 32px;
-	height: 32px;
-	margin: 0;
-	padding: 0;
-	border: 1px solid rgba(255,255,255,0.5);
-	background: #000099;
-	color: white;
-	font-size: 18px;
-	line-height: 1;
-	cursor: pointer;
-	display: block;
-	box-sizing: border-box;
-}
+
 body.jbx-player .jbx-skip:hover {
 	background: #0000cc;
+}
+
+body.jbx-player .jbx-skip {
+	margin: 0; padding: 0;
+	height: 40px; width: 40px;
 }
 body.jbx-player #jbx-audio {
 	margin: 0;

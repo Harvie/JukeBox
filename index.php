@@ -278,12 +278,14 @@ function html5_player() {
 <html class="jbx-player-html"><head><meta charset="<?= $GLOBALS['charset'] ?>"><title><?= htmlspecialchars($title, ENT_QUOTES, $GLOBALS['charset']) ?>: Music Player</title>
 <link rel="stylesheet" type="text/css" href="<?= htmlspecialchars($css, ENT_QUOTES) ?>" />
 </head><body class="jbx-player">
-<table class="jbx-player-bar" cellpadding="0" cellspacing="0"><tr>
-<?php if($is_playlist) { ?>
-<td class="jbx-skip-cell"><button type="button" class="jbx-skip" id="jbx-prev" title="Previous" aria-label="Previous">&#x23EE;</button></td>
-<td class="jbx-skip-cell"><button type="button" class="jbx-skip" id="jbx-next" title="Next" aria-label="Next">&#x23ED;</button></td>
-<?php } ?>
-<td class="jbx-audio-cell"><audio id="jbx-audio" controls preload="metadata"<?= $song_url && !$is_playlist ? ' src="'.htmlspecialchars($song_url, ENT_QUOTES).'" autoplay' : '' ?>></audio></td>
+<table class="jbx-player-table" cellpadding="0" cellspacing="0">
+<tr>
+<td style="width: 30%;">
+<button type="button" class="jbx-skip" id="jbx-prev" title="Previous" aria-label="Previous">&#x23EE;</button>
+<button type="button" class="jbx-skip" id="jbx-next" title="Next" aria-label="Next">&#x23ED;</button>
+<span id="jbx-audio-filename"><?= urldecode(basename($song_url)) ?></span>
+</td>
+<td><audio id="jbx-audio" controls preload="metadata"<?= $song_url && !$is_playlist ? ' src="'.htmlspecialchars($song_url, ENT_QUOTES).'" autoplay' : '' ?>></audio></td>
 </tr></table>
 <?php if($is_playlist) { ?>
 <script>
@@ -298,6 +300,7 @@ function html5_player() {
 		el.src = list[idx];
 		el.onended = function() { if (idx + 1 < list.length) playAt(idx + 1); };
 		el.play();
+		document.getElementById('jbx-audio-filename').innerHTML = decodeURIComponent(document.getElementById('jbx-audio').src.split('/').pop());
 	}
 	document.getElementById('jbx-prev').onclick = function() { playAt(idx - 1); };
 	document.getElementById('jbx-next').onclick = function() { playAt(idx + 1); };
