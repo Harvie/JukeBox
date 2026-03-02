@@ -1,55 +1,63 @@
-#summary About/Help; O aplikaci & Jak používat JuKe!Box?
-<wiki:toc />
+# About/Help — O aplikaci & Jak používat JuKe!Box?
 
-= English =
-== Copyright ==
-You can find license document on the page called [License].
+<!-- wiki:toc -->
 
-== Not jet! ==
+# English
 
-= Česky =
-== Autorská práva ==
-Licenční ustanovení týkající se tohoto programu naleznete na stránce [License].
+## Copyright
+
+You can find license document on the page called [License](License).
+
+## Not jet!
+
+# Česky
+
+## Autorská práva
+
+Licenční ustanovení týkající se tohoto programu naleznete na stránce [License](License).
 
 Pokud je pomocí tohoto webu (myšleno aplikace jukebox) zpřístupněn materiál, jehož stažením se vy nebo poskytovatel dopouštíte porušení autorských práv, tento obsah nestahujete!
 Instalací nebo používáním aplikace potvrzujete, že jste s právy srozuměni a že je akceptujete. V opačném případě aplikaci nepoužívejte ani neinstalujte.
 
-== Základy Ovládání ==
+## Základy Ovládání
+
 Na úvodní stránce vidíte výpis souborů a adresářů (označeny "DIR").
 Kliknutím na jméno souboru zahájíte stahování.
 Kliknutím na jméno adresáře vstoupíte do adresáře.
 Pokud zobrazený adresář obsahuje soubor index.html nebo index.txt, bude tento zobrazen nad výpisem.
 Vedle každého adresáře nebo hudebního souboru najdete písmenka, pomocí kterých můžete spustit příslušnou akci.
 
+### Tady je krátký přehled významu jednotlivých písmenek
 
-=== Tady je krátký přehled významu jednotlivých písmenek ===
-{{{
+```
 P - Přehrát (je nutné stáhnout playlist.m3u a otevřít v přehrávači hudby - např. Winamp, to se dá po nastavení prohlížeče dělat automaticky...)
   - U složek tato volba přehraje všechny zvukové soubory, které složka obsahuje
 R - To samé jako P, ale přehraje se i hudba v podsložkách (POZOR! raději nepoštět na velké adresáře!!!)
 D - Otevře nadřazenou složku pro daný soubor (pouze u vyhledávání)
 F - Spustí přehrávání v prohlížeči (HTML5), otevřete odkaz v novém okně, pokud si chcete dál prohlížet knihovnu...
 S - Zastaví přehrávání v prohlížeči
-}}}
-== Vyhledávání ==
+```
+
+## Vyhledávání
 
 Před prvním vyhledáváním je potřeba vytvořit cache a nastavit ji práva pr zápis.
 Potom je soubor s cache třeba obnovovat (na stránce vyhledávání se zadá heslo pro obnovení/vytvoření db a stiskne se "refresh cache").
 Na Linuxu se může dát obnovování cache do cronu jako skript používající příkaz find, databáze tak bude udržována stále aktuální.
-Při vyhledávání je možné použít regulární výrazy (mezery budou nahrazeny řetězcem {{{'(.*)'}}} !!!).
+Při vyhledávání je možné použít regulární výrazy (mezery budou nahrazeny řetězcem `'(.*)'` !!!).
 Kromě vyhledávání hudby v lokálním archivu skript také umožňuje vyhledávání hudby a textů písní na www.
 Je limitován počet souborů, u kterých se při vyhledávání zobrazuje velikost. (To by vylučovalo funkci cache - cachovat velikost se mi ale nechce).
 Kromě vyhledávání lze z databáze také vygenerovat (pseudo)náhodný playlist.
 
-== Nastavení automatického přehrávání v oblíbeném přehrávači ==
-http://img181.imageshack.us/img181/9925/autoplayzo6.png
+## Nastavení automatického přehrávání v oblíbeném přehrávači
 
-== Přihlašování ==
+![autoplay](http://img181.imageshack.us/img181/9925/autoplayzo6.png)
+
+## Přihlašování
 
 Pokud je povolen přihašovací modul, budete při prvním otevření stránky vyzváni k zadání příslušných údajů.
 Odhlášení provedete kliknutím na odkaz "LOGOUT" v horním menu.
 
-== Instalace ==
+## Instalace
 
 Instalace se provádí nakopírováním souborů do adresáře přístupného webovému servru,
 upravením nastavení ve zdrojovém souboru a přihlašovacím modulu (http_auth.php).
@@ -57,8 +65,9 @@ Pro zakázání přihlašovacího modulu smažte první řádek kódu (obsahuje 
 a správným nastavením přístupových práv daným souborům.
 Také doporučuji nastavit php open base dir pro pojisteni pred directory traversingem do nadrazenych adresaru...
 
-=== Přehled vlastností v hlavním souboru ===
-{{{
+### Přehled vlastností v hlavním souboru
+
+```
 $title =                Nadpis stránky
 $music_dir =            Relativní cesta k adresáři s hudbout
 $music_dir_url =        URL pro přístup k hudbě z venku
@@ -77,11 +86,11 @@ $indexlist =            Pole se jmény souborů, které se mají případně zob
 $bonus_dir =            Adresář s pomocnými soubory
 $search_cache =         Cesta k vyhledávací cache
 $css_file =             Cesta k CSS stylu (používá i vestavěný HTML5 přehrávač)
-}}}
+```
 
-== Něco nefunguje ==
+## Něco nefunguje
 
-  * Skript - potřebujete webserver s podporou PHP
-  * Vyhledávání - skript nemá práva pro zápis/čtení databáze, nebo databáze ještě nebyla vytvořená...
-  * Přehrávání v prohlížeči - prohlížeč nemusí podporovat daný formát (MP3/Ogg/WAV fungují v HTML5), nebo inline framy...
-  * Něco jiného - RTFM && UTFS && UTFG...
+- Skript - potřebujete webserver s podporou PHP
+- Vyhledávání - skript nemá práva pro zápis/čtení databáze, nebo databáze ještě nebyla vytvořená...
+- Přehrávání v prohlížeči - prohlížeč nemusí podporovat daný formát (MP3/Ogg/WAV fungují v HTML5), nebo inline framy...
+- Něco jiného - RTFM && UTFS && UTFG...
