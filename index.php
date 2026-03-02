@@ -280,8 +280,8 @@ function html5_player() {
 </head><body class="jbx-player">
 <table class="jbx-player-bar" cellpadding="0" cellspacing="0"><tr>
 <?php if($is_playlist) { ?>
-<td class="jbx-skip-cell"><button type="button" class="jbx-skip" id="jbx-prev" title="Previous" aria-label="Previous">&#8249;</button></td>
-<td class="jbx-skip-cell"><button type="button" class="jbx-skip" id="jbx-next" title="Next" aria-label="Next">&#8250;</button></td>
+<td class="jbx-skip-cell"><button type="button" class="jbx-skip" id="jbx-prev" title="Previous" aria-label="Previous">&#x23EE;</button></td>
+<td class="jbx-skip-cell"><button type="button" class="jbx-skip" id="jbx-next" title="Next" aria-label="Next">&#x23ED;</button></td>
 <?php } ?>
 <td class="jbx-audio-cell"><audio id="jbx-audio" controls preload="metadata"<?= $song_url && !$is_playlist ? ' src="'.htmlspecialchars($song_url, ENT_QUOTES).'" autoplay' : '' ?>></audio></td>
 </tr></table>
