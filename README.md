@@ -1,34 +1,34 @@
-#Harvie's JuKe!Box
+# Harvie's JuKe!Box
 
-###EN
+### EN
 This web application allows you to browse, share, download and stream music using a webserver with PHP and an in-browser (HTML5) player or external audio player (WMP, Audacious, Winamp, Totem, etc...).
 Basicaly it's easy to use, easy to install, fully configurable and it looks like this:
 
-###CZ
+### CZ
 Tato webová aplikace vám umožní procházet, sdílet, stahovat a streamovat hudbu pomocí webserveru s podporou PHP a vestavěného (HTML5) přehrávače v prohlížeči, nebo externího přehrávače (WMP, Audacious, Winamp, Totem, apod...).
 Zjednodušeně je aplikace lehce použitelná, lehce se instaluje, vše se dá nastavit a vypadá takto:
 
 
-##ScreenShots
+## ScreenShots
 
-###Latest
+### Latest
 ![screenshot](http://img835.imageshack.us/img835/378/harviejukebox036.png)
 
-###Obsolete
+### Obsolete
   * http://code.google.com/p/h-jukebox/wiki/ScreenShots
 
 
-##ScreenCasts
+## ScreenCasts
 
-###Latest
+### Latest
   * n/a
 
-###Obsolete
+### Obsolete
   * http://www.youtube.com/watch?v=UucMVLs1xfg
   * http://www.youtube.com/watch?v=DQZqnDdQDDk
 
 
-##TODO
+## TODO
   * Autodetect absolute URL of music directory (replace https with http as some music players are not able to handle TLS)
   * Turn jukebox into universal filelisting with plugins for playing music, videos, documents,...
     * some system for registering regex-based hooks on filenames
@@ -42,12 +42,12 @@ Zjednodušeně je aplikace lehce použitelná, lehce se instaluje, vše se dá n
   * Comment source a bit...
 
 
-##Anotation/Anotace
+## Anotation/Anotace
 
-###EN
+### EN
 This project (which is part of school-leaving exams) is aiming to create web application which enables user to browse audio library stored on web server using web browser 
 and then it offers playback of those audio records directly in web browser, in external software audio player or download to harddrive.
 
-###CZ
+### CZ
 Cílem tohoto maturitního projektu je vytvořit webovou aplikaci, která umožní uživateli procházet knihovnu zvukových záznamů na webovém serveru pomocí webového prohlížeče a 
 potom umožní tyto záznamy přehrávat přímo v prohlížeči, streamovat do jiného přehrávače, nebo stáhnout na disk.
