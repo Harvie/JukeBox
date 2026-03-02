@@ -12,7 +12,7 @@ Zjednodušeně je aplikace lehce použitelná, lehce se instaluje, vše se dá n
 ## ScreenShots
 
 ### Latest
-![screenshot](http://img835.imageshack.us/img835/378/harviejukebox036.png)
+![screenshot](docs/screenshot.png)
 
 ### Obsolete
   * http://code.google.com/p/h-jukebox/wiki/ScreenShots
